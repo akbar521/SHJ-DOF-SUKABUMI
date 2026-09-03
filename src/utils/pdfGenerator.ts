@@ -6,10 +6,13 @@ export interface OrderReportData {
   salesmanName: string;
   storeName: string;
   reportDate: string;
+  wilayah?: string;
+  subdistName?: string;
   notes?: string;
   items: {
     product: Product;
     qty: number;
+    subdistLabel?: string;
   }[];
 }
 
@@ -46,9 +49,12 @@ export function generatePdfReport(data: OrderReportData) {
   doc.setFontSize(13);
   doc.text('LAPORAN HARIAN', 39, 11.5);
 
+  const wilayahLabel = data.wilayah ? data.wilayah.toUpperCase() : 'SUKABUMI';
+  const subdistLabel = data.subdistName ? ` | SUBDIST: ${data.subdistName.toUpperCase()}` : '';
+
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.text('MOTORIS MMTW SUKABUMI | Kalkulasi DoF & Struktur Harga Jual (SHJ)', 39, 17.5);
+  doc.text(`MOTORIS MMTW ${wilayahLabel}${subdistLabel} | DoF & Struktur Harga Jual (SHJ)`, 39, 17.5);
 
   // 2. Info / Metadata Section
   doc.setTextColor(textColor[0], textColor[1], textColor[2]);
@@ -61,7 +67,7 @@ export function generatePdfReport(data: OrderReportData) {
   doc.setFont('helvetica', 'normal');
   const noteLines = doc.splitTextToSize(data.notes || '-', availableNoteWidth);
   const noteBlockHeight = Math.max(1, noteLines.length) * 4.2;
-  const metaBoxHeight = 18 + noteBlockHeight;
+  const metaBoxHeight = 22 + noteBlockHeight;
 
   doc.setDrawColor(226, 232, 240);
   doc.setFillColor(248, 250, 252);
@@ -78,11 +84,16 @@ export function generatePdfReport(data: OrderReportData) {
   doc.setFont('helvetica', 'normal');
   doc.text(data.reportDate, 142, currentY + 6.5);
 
-  // Row 2: Salesman
+  // Row 2: Salesman & Wilayah/Subdist
   doc.setFont('helvetica', 'bold');
   doc.text('Salesman:', 18, currentY + 12.5);
   doc.setFont('helvetica', 'normal');
   doc.text(data.salesmanName || 'Salesman Lapangan', 45, currentY + 12.5);
+
+  doc.setFont('helvetica', 'bold');
+  doc.text('Subdist Pengambilan:', 110, currentY + 12.5);
+  doc.setFont('helvetica', 'normal');
+  doc.text(data.subdistName ? `${data.subdistName} (${wilayahLabel})` : wilayahLabel, 142, currentY + 12.5);
 
   // Row 3: Catatan (Word-wrapped to prevent cut-off)
   doc.setFont('helvetica', 'bold');
@@ -153,9 +164,12 @@ export function generatePdfReport(data: OrderReportData) {
       doc.text(`${index + 1}`, 16, currentY + 5);
       doc.text(p.kode_produk, 24, currentY + 5);
 
-      // Truncate long name if needed
-      const truncatedName = p.nama_produk.length > 28 ? p.nama_produk.substring(0, 26) + '..' : p.nama_produk;
-      doc.text(truncatedName, 46, currentY + 5);
+      // Truncate long name if needed, append loading subdist tag if provided
+      const labelTag = item.subdistLabel ? ` [${item.subdistLabel}]` : '';
+      const maxLen = item.subdistLabel ? 22 : 28;
+      const baseName = p.nama_produk.length > maxLen ? p.nama_produk.substring(0, maxLen - 2) + '..' : p.nama_produk;
+      const displayName = baseName + labelTag;
+      doc.text(displayName, 46, currentY + 5);
 
       doc.setFont('helvetica', 'bold');
       doc.text(`${item.qty}`, 98, currentY + 5, { align: 'right' });

@@ -2,6 +2,23 @@ export type Role = 'salesman' | 'admin' | 'warehouse';
 
 export type PriceCategory = 'Grosir' | 'Retail';
 
+export type Wilayah = 'Sukabumi' | 'Cianjur';
+
+export type SubdistKey = 
+  | 'PANJUNAN_CIANJUR' 
+  | 'SIRAWING' 
+  | 'PANJUNAN_SUKABUMI' 
+  | 'CIBADAK' 
+  | 'NYALINDUNG' 
+  | 'CIKOLE' 
+  | 'SUKARAJA';
+
+export interface ProductSubdistPrice {
+  harga_grosir: number;
+  harga_retail: number;
+  persentase_dof?: number;
+}
+
 export interface User {
   id_user: string;
   nama_lengkap: string;
@@ -17,6 +34,8 @@ export interface Product {
   harga_grosir: number;    // DECIMAL(10,2) or DECIMAL(12,4)
   harga_retail: number;    // DECIMAL(10,2) or DECIMAL(12,4)
   persentase_dof: number;  // DECIMAL(3,2), e.g. 0.20 or 0.00
+  wilayah?: Wilayah[];     // e.g. ['Sukabumi', 'Cianjur']
+  subdist_prices?: Partial<Record<SubdistKey, ProductSubdistPrice>>; // Custom prices per subdist
   // Derived SHJ fields
   dof_fee?: number;        // persentase_dof * harga_grosir
   margin_retail?: number;  // harga_retail - (harga_grosir + dof_fee)

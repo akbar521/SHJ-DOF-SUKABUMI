@@ -1,24 +1,271 @@
 import { Product, User, DofHeader } from '../types';
 
 export const INITIAL_USERS: User[] = [
+  // Motoris Sukabumi
   { id_user: 'MTR-001', nama_lengkap: 'RUSDIANA', role: 'salesman', dms_user: 'MMTW-SKI-CIBADAK', password: 'password123', telepon: '081234567891' },
   { id_user: 'MTR-002', nama_lengkap: 'AJENG RIVALDI', role: 'salesman', dms_user: 'MMTW-SKI-NYALINDUNG', password: 'password123', telepon: '081234567892' },
   { id_user: 'MTR-003', nama_lengkap: 'EGA', role: 'salesman', dms_user: 'MMTW-SKI-CIKOLE', password: 'password123', telepon: '081234567893' },
   { id_user: 'MTR-004', nama_lengkap: 'FACHRI', role: 'salesman', dms_user: 'MMTW-SKI-SUKARAJA', password: 'password123', telepon: '081234567894' },
+  // Motoris Cianjur
+  { id_user: 'MTR-CJR-001', nama_lengkap: 'HERU', role: 'salesman', dms_user: 'MMTW-SKI-CIKALONG', password: 'password123', telepon: '081234567801' },
+  { id_user: 'MTR-CJR-002', nama_lengkap: 'HERPIN', role: 'salesman', dms_user: 'MMTW-SKI-CIAPANAS', password: 'password123', telepon: '081234567802' },
+  { id_user: 'MTR-CJR-003', nama_lengkap: 'RIBCA', role: 'salesman', dms_user: 'MMTW-SKI-CIBEBER', password: 'password123', telepon: '081234567803' },
+  { id_user: 'MTR-CJR-004', nama_lengkap: 'AHYAR', role: 'salesman', dms_user: 'MMTW-SKI-CIRANJANG', password: 'password123', telepon: '081234567804' },
+  // Admin & Warehouse
   { id_user: 'USR-ADM', nama_lengkap: 'Dewi Lestari (Admin Finance)', role: 'admin', dms_user: 'ADM-MMTW-SKI', password: 'adminpassword', telepon: '081311223344' },
   { id_user: 'USR-WH1', nama_lengkap: 'Agus Warehouse Lead', role: 'warehouse', dms_user: 'WH-MMTW-SKI', password: 'whpassword', telepon: '081399887766' }
 ];
 
 export const INITIAL_PRODUCTS: Product[] = [
-  { kode_produk: 'PEGAB', nama_produk: 'Extra Joss Go Anggur Pack (6 scht)', harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-  { kode_produk: 'LEXUA', nama_produk: 'Extrajoss Ultimate ( 24 Can)', harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-  { kode_produk: 'LKXOB', nama_produk: 'Komix Herbal Ori Pack (4 tube)', harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-  { kode_produk: 'LKXOD', nama_produk: 'Komix Herbal Ori Sachet (Pack - 6 scht)', harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-  { kode_produk: 'LKXJA-LKXNA-LKXPA', nama_produk: 'Komix Herbal Rasa (Pack - 6 scht)', harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-  { kode_produk: 'LBMAV', nama_produk: 'Bejo Jahe Merah New (12 scht)', harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-  { kode_produk: 'PBSJC', nama_produk: "B7 SLASI Jeruk Nipis Renceng (12's)", harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 },
-  { kode_produk: 'LPRGR', nama_produk: "Promag Herbal 15 ml (6 'S)", harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-  { kode_produk: 'LMHGA', nama_produk: "Mixagrip Herbal Greges (6'S)", harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 }
+  {
+    kode_produk: 'PEGAB',
+    nama_produk: 'Extra Joss Go Anggur Pack (6 scht)',
+    harga_grosir: 5141.52,
+    harga_retail: 6559.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'PEMAB',
+    nama_produk: 'Extra Joss Mangga LAKI Pack (6 scht)',
+    harga_grosir: 5141.52,
+    harga_retail: 6559.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'PEBJE',
+    nama_produk: "Extrajoss Active Pack (12's)",
+    harga_grosir: 12500.00,
+    harga_retail: 15000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 12500.00, harga_retail: 15000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 12600.00, harga_retail: 15000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LEXUA',
+    nama_produk: 'Extrajoss Ultimate ( 24 Can)',
+    harga_grosir: 5700.00,
+    harga_retail: 6500.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 5750.00, harga_retail: 6500.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LKXKD',
+    nama_produk: 'Komix Herbal Kid Pack (4 Tube)',
+    harga_grosir: 9311.80,
+    harga_retail: 12000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LKXOB',
+    nama_produk: 'Komix Herbal Ori Pack (4 tube)',
+    harga_grosir: 9311.80,
+    harga_retail: 12100.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LKXLA',
+    nama_produk: 'Komix Herbal Lemon Pack (4 tube)',
+    harga_grosir: 9311.80,
+    harga_retail: 12100.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LKXOD',
+    nama_produk: 'Komix Herbal Ori Sachet (Pack - 6 scht)',
+    harga_grosir: 9700.30,
+    harga_retail: 13000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LKXJA-LKXNA-LKXPA',
+    nama_produk: 'Komix Herbal Rasa (Pack - 6 scht)',
+    harga_grosir: 9700.30,
+    harga_retail: 13000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'KMXAD',
+    nama_produk: "Komix Adult Box (30's)",
+    harga_grosir: 42000.00,
+    harga_retail: 48000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 42000.00, harga_retail: 48000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 42250.00, harga_retail: 48000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'KMXKD',
+    nama_produk: "Komix Kids Pack (10's)",
+    harga_grosir: 18500.00,
+    harga_retail: 22000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 18500.00, harga_retail: 22000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 18700.00, harga_retail: 22000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LBJAB',
+    nama_produk: 'Bejo Anak Pack (12 scht)',
+    harga_grosir: 24500.00,
+    harga_retail: 27000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 24500.00, harga_retail: 27000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 24750.00, harga_retail: 27000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'FTGKAP',
+    nama_produk: 'Fatigon Kaplet',
+    harga_grosir: 18000.00,
+    harga_retail: 21000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 18000.00, harga_retail: 21000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 18200.00, harga_retail: 21000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LBMAV',
+    nama_produk: 'Bejo Jahe Merah New (12 scht)',
+    harga_grosir: 31084.00,
+    harga_retail: 33000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 31200.00, harga_retail: 33000.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'ENTROT',
+    nama_produk: 'Entrostop Tab',
+    harga_grosir: 15000.00,
+    harga_retail: 17500.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 15000.00, harga_retail: 17500.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 15150.00, harga_retail: 17500.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'PBSJC',
+    nama_produk: "B7 SLASI Jeruk Nipis Renceng (12's)",
+    harga_grosir: 17460.30,
+    harga_retail: 19000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 17500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'FTGSPR',
+    nama_produk: 'Fatigon Spirit',
+    harga_grosir: 22000.00,
+    harga_retail: 25000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 22000.00, harga_retail: 25000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 22200.00, harga_retail: 25000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'ENTROH',
+    nama_produk: 'Entrostop Herbal Anak',
+    harga_grosir: 16500.00,
+    harga_retail: 19000.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 16500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
+      SIRAWING: { harga_grosir: 16700.00, harga_retail: 19000.00, persentase_dof: 0.20 }
+    }
+  },
+  {
+    kode_produk: 'LPRGR',
+    nama_produk: "Promag Herbal 15 ml (6 'S)",
+    harga_grosir: 15810.00,
+    harga_retail: 16800.00,
+    persentase_dof: 0.00,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 },
+      SIRAWING: { harga_grosir: 15900.00, harga_retail: 16800.00, persentase_dof: 0.00 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 }
+    }
+  },
+  {
+    kode_produk: 'LMHGA',
+    nama_produk: "Mixagrip Herbal Greges (6'S)",
+    harga_grosir: 16188.00,
+    harga_retail: 16700.00,
+    persentase_dof: 0.00,
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      PANJUNAN_CIANJUR: { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 },
+      SIRAWING: { harga_grosir: 16250.00, harga_retail: 16700.00, persentase_dof: 0.00 },
+      PANJUNAN_SUKABUMI: { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 }
+    }
+  }
 ];
 
 export const INITIAL_ORDERS: DofHeader[] = [
