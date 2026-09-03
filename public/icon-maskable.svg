@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGradMaskable" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#047857" />
+      <stop offset="50%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#0f766e" />
+    </linearGradient>
+    <linearGradient id="cardGradMaskable" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+    <linearGradient id="accentGradMaskable" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <filter id="shadowMaskable" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <!-- Full Bleed Background for Maskable Icon -->
+  <rect width="512" height="512" fill="url(#bgGradMaskable)" />
+
+  <!-- Inner Safe Zone Content (scaled to fit within central 80% circle) -->
+  <g transform="translate(256, 256) scale(0.78) translate(-256, -256)">
+    <!-- Main Central Card / Clipboard -->
+    <g filter="url(#shadowMaskable)">
+      <rect x="116" y="90" width="280" height="340" rx="36" fill="url(#cardGradMaskable)" />
+    </g>
+
+    <!-- Clipboard Top Clip -->
+    <rect x="196" y="70" width="120" height="40" rx="14" fill="#047857" />
+    <rect x="226" y="84" width="60" height="12" rx="6" fill="#ffffff" opacity="0.9" />
+
+    <!-- Header Banner on Card -->
+    <rect x="146" y="145" width="220" height="32" rx="8" fill="#ecfdf5" />
+    <text x="256" y="166" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="900" fill="#047857" text-anchor="middle" letter-spacing="2">KALBE MOTORIS</text>
+
+    <!-- Document Lines -->
+    <rect x="146" y="196" width="140" height="14" rx="7" fill="#059669" />
+    <rect x="306" y="196" width="60" height="14" rx="7" fill="#10b981" opacity="0.6" />
+
+    <rect x="146" y="226" width="100" height="12" rx="6" fill="#94a3b8" />
+    <rect x="266" y="226" width="100" height="12" rx="6" fill="#cbd5e1" />
+
+    <rect x="146" y="254" width="120" height="12" rx="6" fill="#94a3b8" />
+    <rect x="286" y="254" width="80" height="12" rx="6" fill="#cbd5e1" />
+
+    <!-- Checkmark Badge -->
+    <g transform="translate(256, 345)">
+      <circle r="44" fill="url(#accentGradMaskable)" filter="url(#shadowMaskable)" />
+      <path d="M-18 -2 L-6 12 L20 -14" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+
+    <text x="256" y="474" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="3">MMTW SUKABUMI</text>
+  </g>
+</svg>

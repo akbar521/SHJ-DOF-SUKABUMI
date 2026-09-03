@@ -1,0 +1,8 @@
+{
+  "name": "Laporan Harian - Motoris MMTW Sukabumi",
+  "description": "Laporan Harian Motoris MMTW Sukabumi Kalbe - Kalkulator Struktur Harga Jual (SHJ), Harga Grosir, Retail+, DOF Fee, dan Generator Laporan WhatsApp/PDF",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
