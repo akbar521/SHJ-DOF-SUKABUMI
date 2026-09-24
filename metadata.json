@@ -1,6 +1,6 @@
 {
   "name": "Laporan Harian - Motoris MMTW Sukabumi",
-  "description": "Laporan Harian Motoris MMTW Sukabumi & Cianjur (Heru, Herpin, Ribca, Ahyar) Kalbe - Kalkulator Struktur Harga Jual (SHJ), Subdist Panjunan & Sirawing, Harga Grosir, Retail+, DOF Fee, dan Generator Laporan WhatsApp/PDF",
+  "description": "Laporan Harian Motoris MMTW Sukabumi & Cianjur Kalbe - Kalkulator Daily Activity Report, Real Call, EC, NOO, Omset Setoran Retail, dan Generator Laporan WhatsApp/PDF",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

@@ -1,13 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Product, SubdistKey, Wilayah, ProductSubdistPrice } from '../types';
+import { Product, SubdistKey, Wilayah } from '../types';
 import { 
   SUBDIST_LIST, 
-  resolveSubdistPrice, 
   CIANJUR_MOTORIS, 
   SUKABUMI_MOTORIS 
 } from '../data/subdistConfig';
-import { SubdistPriceManagerModal } from './SubdistPriceManagerModal';
-import { formatRupiah, formatDecimal, calculateSHJ } from '../utils/mathUtils';
+import { formatRupiah } from '../utils/mathUtils';
 import { generatePdfReport } from '../utils/pdfGenerator';
 import { 
   generateDailyActivityReport, 
@@ -16,7 +14,6 @@ import {
   NBC_PRODUCT_SHORT_NAMES 
 } from '../utils/waReportFormatter';
 import { 
-  Calculator, 
   Copy, 
   Check, 
   Download, 
@@ -24,65 +21,35 @@ import {
   Sparkles, 
   User as UserIcon, 
   Calendar, 
-  FileText, 
   Plus, 
   Minus, 
-  TrendingUp, 
   CheckCircle2, 
-  Zap,
-  MessageSquare,
-  DollarSign,
-  PhoneCall,
-  Target,
-  AlertCircle,
-  Award,
-  Layers,
-  Building2,
-  Sliders,
-  Edit3,
+  MessageSquare, 
+  PhoneCall, 
+  Target, 
+  AlertCircle, 
+  Award, 
+  Layers, 
   MapPin,
-  Scale
+  TrendingUp,
+  Store
 } from 'lucide-react';
-
-export const ACTIVE_MOTORIS = SUKABUMI_MOTORIS.map(m => ({
-  name: m.name,
-  dms: m.dmsCode || 'MMTW-SKI-PANJUNAN',
-  label: m.label
-}));
-
-const STORAGE_KEY_CUSTOM_PRICES = 'subdist_custom_prices_v2';
 
 interface SimpleDofShjCalculatorProps {
   products: Product[];
 }
 
 export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps) {
-  // 0. Regional & Subdist Setup (Cianjur Panjunan vs Sirawing, and Sukabumi)
+  // 1. Regional & Pangkalan Setup (Cianjur & Sukabumi)
   const [selectedWilayah, setSelectedWilayah] = useState<Wilayah>('Cianjur');
-  const [selectedSubdist, setSelectedSubdist] = useState<SubdistKey>('PANJUNAN_CIANJUR');
-  
-  // Custom prices saved in localStorage per subdist
-  const [customOverrides, setCustomOverrides] = useState<Record<string, Record<string, ProductSubdistPrice>>>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_CUSTOM_PRICES);
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
+  const [selectedSubdist, setSelectedSubdist] = useState<SubdistKey>('CIKALONG');
 
-  // Modal for comparing & adjusting subdist prices
-  const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
-
-  // Quick inline edit on table row
-  const [inlineEditingSku, setInlineEditingSku] = useState<string | null>(null);
-  const [inlineGrosirInput, setInlineGrosirInput] = useState<string>('');
-
-  // 1. Motoris & Identitas - Cianjur salesmen: HERU, HERPIN, RIBCA, AHYAR
+  // Active Pangkalan Info
   const activeSubdistInfo = useMemo(() => {
     return SUBDIST_LIST.find(s => s.key === selectedSubdist) || SUBDIST_LIST[0];
   }, [selectedSubdist]);
 
+  // Salesman & DMS Identitas
   const [salesmanName, setSalesmanName] = useState('HERU');
   const [userDms, setUserDms] = useState('MMTW-SKI-CIKALONG');
   const [reportDate, setReportDate] = useState(() => {
@@ -90,59 +57,27 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     return today.toISOString().split('T')[0];
   });
 
-  // Per-item loading subdist map (defaults to selectedSubdist, allowing individual override per SKU)
-  const [itemSubdistMap, setItemSubdistMap] = useState<Record<string, SubdistKey>>({});
-
-  // Helper to change loading subdist for a single product (Panjunan vs Sirawing)
-  const handleSetItemSubdist = (kodeProduk: string, subdistKey: SubdistKey) => {
-    setItemSubdistMap(prev => ({
-      ...prev,
-      [kodeProduk]: subdistKey
-    }));
-  };
-
-  // Helper to batch set all products' loading subdist to Panjunan or Sirawing
-  const handleSetAllItemsSubdist = (subdistKey: SubdistKey) => {
-    setSelectedSubdist(subdistKey);
-    const newMap: Record<string, SubdistKey> = {};
-    products.forEach(p => {
-      newMap[p.kode_produk] = subdistKey;
-    });
-    setItemSubdistMap(newMap);
-  };
-
   // Select Cianjur Salesman (HERU -> Cikalong, HERPIN -> Cipanas, RIBCA -> Cibeber, AHYAR -> Ciranjang)
   const handleSelectCianjurSalesman = (motoris: typeof CIANJUR_MOTORIS[0]) => {
     setSalesmanName(motoris.name);
     if (motoris.dmsCode) {
       setUserDms(motoris.dmsCode);
     }
+    const matchingSub = SUBDIST_LIST.find(s => s.wilayah === 'Cianjur' && s.defaultSalesman === motoris.name);
+    if (matchingSub) {
+      setSelectedSubdist(matchingSub.key);
+    }
   };
 
-  // Sync salesman & DMS when switching Subdist
-  const handleSelectSubdist = (subdistKey: SubdistKey) => {
-    setSelectedSubdist(subdistKey);
-    // Batch sync all items to this subdist
-    const newMap: Record<string, SubdistKey> = {};
-    products.forEach(p => {
-      newMap[p.kode_produk] = subdistKey;
-    });
-    setItemSubdistMap(newMap);
-
-    const subInfo = SUBDIST_LIST.find(s => s.key === subdistKey);
-    if (subInfo) {
-      if (subInfo.wilayah === 'Cianjur') {
-        const found = CIANJUR_MOTORIS.find(m => m.name.toUpperCase() === salesmanName.toUpperCase());
-        if (found?.dmsCode) {
-          setUserDms(found.dmsCode);
-        } else {
-          setUserDms('MMTW-SKI-CIKALONG');
-          setSalesmanName('HERU');
-        }
-      } else {
-        setUserDms(subInfo.dmsUser);
-        setSalesmanName(subInfo.defaultSalesman);
-      }
+  // Select Sukabumi Salesman (RUSDIANA -> Cibadak, HIKMATIAR -> Nyalindung, EGA -> Cikole, FACHRI -> Sukaraja)
+  const handleSelectSukabumiSalesman = (motoris: typeof SUKABUMI_MOTORIS[0]) => {
+    setSalesmanName(motoris.name);
+    if (motoris.dmsCode) {
+      setUserDms(motoris.dmsCode);
+    }
+    const matchingSub = SUBDIST_LIST.find(s => s.wilayah === 'Sukabumi' && s.defaultSalesman === motoris.name);
+    if (matchingSub) {
+      setSelectedSubdist(matchingSub.key);
     }
   };
 
@@ -150,60 +85,14 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
   const handleSelectWilayah = (wil: Wilayah) => {
     setSelectedWilayah(wil);
     if (wil === 'Cianjur') {
-      setSelectedSubdist('PANJUNAN_CIANJUR');
-      const defaultMotoris = CIANJUR_MOTORIS.find(m => m.name.toUpperCase() === salesmanName.toUpperCase()) || CIANJUR_MOTORIS[0];
-      setSalesmanName(defaultMotoris.name);
-      setUserDms(defaultMotoris.dmsCode || 'MMTW-SKI-CIKALONG');
-      
-      const newMap: Record<string, SubdistKey> = {};
-      products.forEach(p => {
-        newMap[p.kode_produk] = 'PANJUNAN_CIANJUR';
-      });
-      setItemSubdistMap(newMap);
+      setSelectedSubdist('CIKALONG');
+      setSalesmanName('HERU');
+      setUserDms('MMTW-SKI-CIKALONG');
     } else {
-      setSelectedSubdist('PANJUNAN_SUKABUMI');
-      setUserDms('MMTW-SKI-PANJUNAN');
-      if (!SUKABUMI_MOTORIS.some(m => m.name === salesmanName)) {
-        setSalesmanName('RUSDIANA');
-      }
-      setItemSubdistMap({});
+      setSelectedSubdist('CIBADAK');
+      setSalesmanName('RUSDIANA');
+      setUserDms('MMTW-SKI-CIBADAK');
     }
-  };
-
-  // Save custom price for a subdist
-  const handleSaveSubdistPrice = (subdistKey: SubdistKey, kodeProduk: string, newGrosir: number, newRetail?: number) => {
-    setCustomOverrides(prev => {
-      const updated = {
-        ...prev,
-        [subdistKey]: {
-          ...(prev[subdistKey] || {}),
-          [kodeProduk]: {
-            ...(prev[subdistKey]?.[kodeProduk] || {
-              harga_retail: newRetail || 0,
-              persentase_dof: 0.20
-            }),
-            harga_grosir: newGrosir,
-            ...(newRetail !== undefined ? { harga_retail: newRetail } : {})
-          }
-        }
-      };
-      localStorage.setItem(STORAGE_KEY_CUSTOM_PRICES, JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  // Reset custom prices
-  const handleResetCustomPrices = (subdistKey?: SubdistKey) => {
-    setCustomOverrides(prev => {
-      let updated = { ...prev };
-      if (subdistKey) {
-        delete updated[subdistKey];
-      } else {
-        updated = {};
-      }
-      localStorage.setItem(STORAGE_KEY_CUSTOM_PRICES, JSON.stringify(updated));
-      return updated;
-    });
   };
 
   // 2. Kinerja Kunjungan
@@ -223,7 +112,6 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
   const [quantities, setQuantities] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     products.forEach(p => {
-      // Default sample matching prompt
       if (p.kode_produk === 'PEGAB') initial[p.kode_produk] = 21; // Go Anggur
       else if (p.kode_produk === 'LEXUA') initial[p.kode_produk] = 10; // Ultimate
       else if (p.kode_produk === 'LKXOD') initial[p.kode_produk] = 2; // Komix Ori
@@ -239,12 +127,6 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
   // UI state for copy notification
   const [copied, setCopied] = useState(false);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
-
-  // Switch Motoris
-  const handleSelectMotoris = (index: number) => {
-    setSalesmanName(ACTIVE_MOTORIS[index].name);
-    setUserDms(ACTIVE_MOTORIS[index].dms);
-  };
 
   // Update quantity handler
   const handleQtyChange = (kode_produk: string, newQty: number) => {
@@ -327,62 +209,32 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     });
   }, [products, selectedWilayah]);
 
-  // Calculated items with Subdist pricing & PF / NBC flags
+  // Calculated items with PF / NBC flags
   const calculatedItems = useMemo(() => {
     return filteredProducts.map(p => {
       const qty = quantities[p.kode_produk] || 0;
-      // Determine loading subdist for this specific item (Panjunan Cianjur vs Sirawing)
-      const itemSubdistKey = (selectedWilayah === 'Cianjur')
-        ? (itemSubdistMap[p.kode_produk] || selectedSubdist)
-        : selectedSubdist;
-      const subdistInfo = SUBDIST_LIST.find(s => s.key === itemSubdistKey) || activeSubdistInfo;
-
-      // Resolve price specific to this item's chosen loading subdist
-      const price = resolveSubdistPrice(p, itemSubdistKey, customOverrides);
-      const effectiveProduct: Product = {
-        ...p,
-        harga_grosir: price.harga_grosir,
-        harga_retail: price.harga_retail,
-        persentase_dof: price.persentase_dof
-      };
-
-      const shj = calculateSHJ(price.harga_grosir, price.harga_retail, price.persentase_dof);
-      const subGrosir = price.harga_grosir * qty;
-      const subRetail = price.harga_retail * qty;
-      const subShj = shj.shj * qty;
-      const subDofFee = shj.dofFee * qty;
+      const subRetail = p.harga_retail * qty;
       const isPfA = p.kode_produk === 'LBMAV';
       const isPfB = p.kode_produk === 'LPRGR';
       const isPf = isPfA || isPfB;
-      const isCustomPrice = Boolean(customOverrides[itemSubdistKey]?.[p.kode_produk]);
 
       return {
         product: p,
-        effectiveProduct,
+        effectiveProduct: p,
         qty,
-        shj,
-        subGrosir,
         subRetail,
-        subShj,
-        subDofFee,
         isPfA,
         isPfB,
         isPf,
-        isCustomPrice,
-        itemSubdistKey,
-        subdistInfo,
         shortName: NBC_PRODUCT_SHORT_NAMES[p.kode_produk] || p.nama_produk
       };
     });
-  }, [filteredProducts, quantities, selectedSubdist, itemSubdistMap, customOverrides, activeSubdistInfo, selectedWilayah]);
+  }, [filteredProducts, quantities]);
 
   // Total summary
   const summary = useMemo(() => {
     let totalQty = 0;
-    let totalGrosir = 0;
     let totalRetail = 0;
-    let totalShj = 0;
-    let totalDofFee = 0;
 
     let omsetPfA = 0;
     let qtyPfA = 0;
@@ -392,29 +244,9 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     let qtyNbc = 0;
     let omsetNbc = 0;
 
-    let panjunanQty = 0;
-    let panjunanGrosir = 0;
-    let panjunanSkuCount = 0;
-    let rawingQty = 0;
-    let rawingGrosir = 0;
-    let rawingSkuCount = 0;
-
     calculatedItems.forEach(item => {
       totalQty += item.qty;
-      totalGrosir += item.subGrosir;
       totalRetail += item.subRetail;
-      totalShj += item.subShj;
-      totalDofFee += item.subDofFee;
-
-      if (item.itemSubdistKey === 'SIRAWING') {
-        rawingSkuCount += 1;
-        rawingQty += item.qty;
-        rawingGrosir += item.subGrosir;
-      } else {
-        panjunanSkuCount += 1;
-        panjunanQty += item.qty;
-        panjunanGrosir += item.subGrosir;
-      }
 
       if (item.isPfA) {
         qtyPfA += item.qty;
@@ -435,22 +267,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
 
     return {
       totalQty,
-      totalGrosir,
       totalRetail,
-      totalShj,
-      totalDofFee,
       qtyPfA,
       omsetPfA,
       qtyPfB,
       omsetPfB,
       qtyNbc,
       omsetNbc,
-      panjunanQty,
-      panjunanGrosir,
-      panjunanSkuCount,
-      rawingQty,
-      rawingGrosir,
-      rawingSkuCount,
       totalSetoran,
       totalNotEc: remainingNotEc,
       totalNotEcOriginal,
@@ -536,33 +359,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     else if (field === 'alasanLain') setAlasanLain(nextVal);
   };
 
-  // UI states for report format - default to Rekon DOF & SHJ
-  const [activeReportTab, setActiveReportTab] = useState<'daily' | 'dof_detail'>('dof_detail');
+  // UI state for report format - default to Daily Activity
+  const [activeReportTab, setActiveReportTab] = useState<'daily' | 'itemized'>('daily');
 
-  // Dynamic Subdist Report Label (e.g., Subdist Panjunan, Grosir Sirawing, or Panjunan & Sirawing)
-  const dynamicSubdistReportLabel = useMemo(() => {
-    if (selectedWilayah !== 'Cianjur') {
-      return activeSubdistInfo.label;
-    }
-    const itemsWithQty = calculatedItems.filter(i => i.qty > 0);
-    if (itemsWithQty.length === 0) {
-      if (summary.panjunanSkuCount > 0 && summary.rawingSkuCount > 0) {
-        return 'Panjunan & Sirawing';
-      }
-      return summary.rawingSkuCount > 0 ? 'Grosir Sirawing' : 'Subdist Panjunan';
-    }
-    const hasPanjunan = itemsWithQty.some(i => i.itemSubdistKey === 'PANJUNAN_CIANJUR');
-    const hasSirawing = itemsWithQty.some(i => i.itemSubdistKey === 'SIRAWING');
-    if (hasPanjunan && hasSirawing) {
-      return 'Panjunan & Sirawing';
-    }
-    if (hasSirawing) {
-      return 'Grosir Sirawing';
-    }
-    return 'Subdist Panjunan';
-  }, [selectedWilayah, activeSubdistInfo.label, calculatedItems, summary.panjunanSkuCount, summary.rawingSkuCount]);
+  // Pangkalan Report Label
+  const dynamicSubdistReportLabel = activeSubdistInfo.label;
 
-  // Generate Daily Activity Report Text with Wilayah & Subdist
+  // Generate Daily Activity Report Text
   const dailyReportText = useMemo(() => {
     return generateDailyActivityReport({
       salesmanName,
@@ -574,9 +377,8 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       ec,
       noo,
       items: calculatedItems.map(item => ({
-        product: item.effectiveProduct,
-        qty: item.qty,
-        subdistLabel: item.itemSubdistKey === 'SIRAWING' ? 'Grosir Sirawing' : 'Subdist Panjunan'
+        product: item.product,
+        qty: item.qty
       })),
       stockCukup,
       pemilikTidakAda,
@@ -603,8 +405,8 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     totalBranding
   ]);
 
-  // Generate Detailed DOF & SHJ Report Text with Wilayah & Subdist
-  const dofShjReportText = useMemo(() => {
+  // Generate Itemized Sales Report Text
+  const itemizedReportText = useMemo(() => {
     return generateDofShjReport({
       salesmanName,
       userDms,
@@ -615,9 +417,8 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       ec,
       noo,
       items: calculatedItems.map(item => ({
-        product: item.effectiveProduct,
-        qty: item.qty,
-        subdistLabel: item.itemSubdistKey === 'SIRAWING' ? 'Grosir Sirawing' : 'Subdist Panjunan'
+        product: item.product,
+        qty: item.qty
       }))
     });
   }, [
@@ -632,7 +433,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     calculatedItems
   ]);
 
-  const activeReportText = activeReportTab === 'daily' ? dailyReportText : dofShjReportText;
+  const activeReportText = activeReportTab === 'daily' ? dailyReportText : itemizedReportText;
 
   // Copy to clipboard
   const handleCopyReport = async () => {
@@ -654,21 +455,20 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     }
   };
 
-  // Download PDF with Wilayah & Subdist
+  // Download PDF
   const handleDownloadPdf = () => {
     setIsGeneratingPdf(true);
     try {
       generatePdfReport({
         salesmanName: `${salesmanName} (${userDms})`,
-        storeName: activeReportTab === 'daily' ? 'REPORT DAILY ACTIVITY' : 'LAPORAN REKON DOF & SHJ',
+        storeName: activeReportTab === 'daily' ? 'REPORT DAILY ACTIVITY' : 'RINCIAN PENJUALAN HARIAN',
         reportDate: formatIndonesianFullDate(reportDate),
         wilayah: selectedWilayah,
         subdistName: dynamicSubdistReportLabel,
-        notes: `Real Call: ${realCall} | EC: ${ec} | NOO: ${noo} | Total DOF: ${formatRupiah(summary.totalDofFee, true)} | Setoran: ${formatRupiah(summary.totalSetoran, true)}`,
+        notes: `Real Call: ${realCall} | EC: ${ec} | NOO: ${noo} | Setoran Omset: ${formatRupiah(summary.totalSetoran, true)}`,
         items: calculatedItems.map(item => ({
-          product: item.effectiveProduct,
-          qty: item.qty,
-          subdistLabel: item.itemSubdistKey === 'SIRAWING' ? 'Rawing' : 'Panjunan'
+          product: item.product,
+          qty: item.qty
         }))
       });
     } catch (err) {
@@ -691,7 +491,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             <div>
               <div className="flex items-center space-x-2 flex-wrap gap-y-1">
                 <h1 className="text-base sm:text-lg font-extrabold text-slate-900">
-                  Laporan Harian &amp; DOF
+                  Laporan Harian Penjualan
                 </h1>
                 <span className={`text-[11px] font-extrabold px-2.5 py-0.5 rounded-md border shadow-2xs ${
                   selectedWilayah === 'Cianjur' 
@@ -701,7 +501,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   MOTORIS MMTW {selectedWilayah.toUpperCase()}
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${activeSubdistInfo.badgeColor}`}>
-                  Subdist: {activeSubdistInfo.label}
+                  Pangkalan: {activeSubdistInfo.label}
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                   selectedWilayah === 'Cianjur'
@@ -712,7 +512,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Kalkulasi <strong>Daily Activity Report</strong>, <strong>DOF (20%)</strong>, &amp; <strong>SHJ</strong> sesuai subdist pengambilan ({activeSubdistInfo.label}) dan salesman ({salesmanName}).
+                Kalkulasi <strong>Daily Activity Report</strong> &amp; <strong>Omset Setoran</strong> untuk Pangkalan {activeSubdistInfo.label} dan salesman {salesmanName}.
               </p>
             </div>
           </div>
@@ -728,7 +528,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
               }`}
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              <span>{copied ? 'Tersalin!' : `📋 Salin ${activeReportTab === 'daily' ? 'Daily Report' : 'Laporan DOF'} (WA)`}</span>
+              <span>{copied ? 'Tersalin!' : `📋 Salin ${activeReportTab === 'daily' ? 'Daily Report' : 'Rincian'} (WA)`}</span>
             </button>
 
             <button
@@ -760,7 +560,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </div>
         </div>
 
-        {/* Wilayah & Subdist Selector Section */}
+        {/* Wilayah & Pangkalan / Motoris Selector Section */}
         <div className="pt-4 pb-2 border-b border-slate-100">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <div className="flex items-center space-x-2">
@@ -779,7 +579,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   }`}
                 >
                   <span>CIANJUR</span>
-                  <span className="text-[10px] opacity-80">(2 Subdist)</span>
+                  <span className="text-[10px] opacity-80">(4 Pangkalan)</span>
                 </button>
                 <button
                   type="button"
@@ -791,99 +591,94 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   }`}
                 >
                   <span>SUKABUMI</span>
-                  <span className="text-[10px] opacity-80">(Pangkalan)</span>
+                  <span className="text-[10px] opacity-80">(4 Pangkalan)</span>
                 </button>
               </div>
             </div>
-
-            {/* Button to open Subdist Price Comparison & Adjustment Modal */}
-            {selectedWilayah === 'Cianjur' && (
-              <button
-                type="button"
-                onClick={() => setIsPriceModalOpen(true)}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-xl transition flex items-center space-x-1.5 shadow-xs cursor-pointer"
-              >
-                <Scale className="w-3.5 h-3.5" />
-                <span>Atur &amp; Bandingkan Harga Subdist (Panjunan vs Sirawing)</span>
-              </button>
-            )}
           </div>
 
-          {/* Subdist & Salesman Buttons */}
+          {/* Salesman Buttons */}
           {selectedWilayah === 'Cianjur' ? (
-            <div className="space-y-3">
-              {/* Dedicated Cianjur Salesman Selection (HERU, HERPIN, RIBCA, AHYAR) */}
-              <div>
-                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center justify-between">
-                  <span className="flex items-center space-x-1">
-                    <UserIcon className="w-3.5 h-3.5 text-blue-600" />
-                    <span>Pilih Salesman / Motoris Cianjur &amp; Daerah Operasional:</span>
-                  </span>
-                  <span className="text-[10px] text-slate-400">DMS terintegrasi otomatis</span>
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                  {CIANJUR_MOTORIS.map((m) => {
-                    const isSelected = salesmanName.toUpperCase() === m.name.toUpperCase();
-                    return (
-                      <button
-                        key={m.name}
-                        type="button"
-                        onClick={() => handleSelectCianjurSalesman(m)}
-                        className={`p-3 rounded-xl text-left border transition cursor-pointer ${
-                          isSelected
-                            ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500/20 shadow-xs'
-                            : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded ${
-                            isSelected ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'
-                          }`}>
-                            {m.areaHint?.toUpperCase() || 'CIANJUR'}
-                          </span>
-                          {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
-                        </div>
-                        <div className="font-extrabold text-sm text-slate-900 mt-1.5">{m.name}</div>
-                        <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
-                          Daerah: <span className="text-blue-700">{m.areaHint}</span>
-                        </div>
-                        <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate" title={m.dmsCode}>
-                          {m.dmsCode}
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center justify-between">
+                <span className="flex items-center space-x-1">
+                  <UserIcon className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Pilih Salesman / Pangkalan Cianjur:</span>
+                </span>
+                <span className="text-[10px] text-slate-400">DMS &amp; Pangkalan terintegrasi</span>
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {CIANJUR_MOTORIS.map((m) => {
+                  const isSelected = salesmanName.toUpperCase() === m.name.toUpperCase();
+                  return (
+                    <button
+                      key={m.name}
+                      type="button"
+                      onClick={() => handleSelectCianjurSalesman(m)}
+                      className={`p-3 rounded-xl text-left border transition cursor-pointer ${
+                        isSelected
+                          ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-500/20 shadow-xs'
+                          : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded ${
+                          isSelected ? 'bg-blue-600 text-white' : 'bg-blue-100 text-blue-800'
+                        }`}>
+                          {m.areaHint?.toUpperCase() || 'CIANJUR'}
+                        </span>
+                        {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
+                      </div>
+                      <div className="font-extrabold text-sm text-slate-900 mt-1.5">{m.name}</div>
+                      <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
+                        Pangkalan: <span className="text-blue-700">{m.areaHint}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate" title={m.dmsCode}>
+                        {m.dmsCode}
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           ) : (
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center space-x-1">
-                <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Pilih Pangkalan / Motoris Sukabumi:</span>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-2 flex items-center justify-between">
+                <span className="flex items-center space-x-1">
+                  <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Pilih Salesman / Pangkalan Sukabumi:</span>
+                </span>
+                <span className="text-[10px] text-slate-400">DMS &amp; Pangkalan terintegrasi</span>
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                {SUBDIST_LIST.filter(s => s.wilayah === 'Sukabumi').map((s) => {
-                  const isSelected = selectedSubdist === s.key && salesmanName === s.defaultSalesman;
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                {SUKABUMI_MOTORIS.map((m) => {
+                  const isSelected = salesmanName.toUpperCase() === m.name.toUpperCase();
                   return (
                     <button
-                      key={s.key}
+                      key={m.name}
                       type="button"
-                      onClick={() => handleSelectSubdist(s.key)}
-                      className={`p-2.5 rounded-xl text-left border transition cursor-pointer ${
+                      onClick={() => handleSelectSukabumiSalesman(m)}
+                      className={`p-3 rounded-xl text-left border transition cursor-pointer ${
                         isSelected
                           ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/20 shadow-xs'
                           : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">
-                          {s.shortLabel}
+                        <span className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded ${
+                          isSelected ? 'bg-emerald-600 text-white' : 'bg-emerald-100 text-emerald-800'
+                        }`}>
+                          {m.areaHint?.toUpperCase() || 'SUKABUMI'}
                         </span>
-                        {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+                        {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
                       </div>
-                      <div className="font-bold text-xs text-slate-900 mt-1">{s.defaultSalesman}</div>
-                      <div className="text-[10px] text-slate-500 font-mono truncate">{s.dmsUser}</div>
+                      <div className="font-extrabold text-sm text-slate-900 mt-1.5">{m.name}</div>
+                      <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
+                        Pangkalan: <span className="text-emerald-700">{m.areaHint}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate" title={m.dmsCode}>
+                        {m.dmsCode}
+                      </div>
                     </button>
                   );
                 })}
@@ -949,7 +744,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         </div>
       </div>
 
-      {/* 2. Kinerja Kunjungan Summary Cards */}
+      {/* 2. Kinerja Kunjungan Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Real Call */}
         <div className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-xs">
@@ -961,13 +756,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             <div className="flex items-center space-x-1">
               <button 
                 onClick={() => setRealCall(prev => Math.max(0, prev - 1))}
-                className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center cursor-pointer"
               >
                 -
               </button>
               <button 
                 onClick={() => setRealCall(prev => prev + 1)}
-                className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 flex items-center justify-center cursor-pointer"
               >
                 +
               </button>
@@ -994,13 +789,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             <div className="flex items-center space-x-1">
               <button 
                 onClick={() => setEc(prev => Math.max(0, prev - 1))}
-                className="w-5 h-5 rounded bg-emerald-100 hover:bg-emerald-200 text-xs font-bold text-emerald-800 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-emerald-100 hover:bg-emerald-200 text-xs font-bold text-emerald-800 flex items-center justify-center cursor-pointer"
               >
                 -
               </button>
               <button 
                 onClick={() => setEc(prev => prev + 1)}
-                className="w-5 h-5 rounded bg-emerald-100 hover:bg-emerald-200 text-xs font-bold text-emerald-800 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-emerald-100 hover:bg-emerald-200 text-xs font-bold text-emerald-800 flex items-center justify-center cursor-pointer"
               >
                 +
               </button>
@@ -1027,13 +822,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             <div className="flex items-center space-x-1">
               <button 
                 onClick={() => setNoo(prev => Math.max(0, prev - 1))}
-                className="w-5 h-5 rounded bg-blue-100 hover:bg-blue-200 text-xs font-bold text-blue-800 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-blue-100 hover:bg-blue-200 text-xs font-bold text-blue-800 flex items-center justify-center cursor-pointer"
               >
                 -
               </button>
               <button 
                 onClick={() => setNoo(prev => prev + 1)}
-                className="w-5 h-5 rounded bg-blue-100 hover:bg-blue-200 text-xs font-bold text-blue-800 flex items-center justify-center"
+                className="w-5 h-5 rounded bg-blue-100 hover:bg-blue-200 text-xs font-bold text-blue-800 flex items-center justify-center cursor-pointer"
               >
                 +
               </button>
@@ -1050,92 +845,63 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </div>
         </div>
 
-        {/* Total Unit Qty Terjual */}
-        <div className="bg-purple-50/70 border border-purple-200 rounded-xl p-3.5 shadow-xs">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-purple-800 flex items-center space-x-1">
-            <Layers className="w-3 h-3 text-purple-600" />
-            <span>Total Qty Terjual</span>
-          </div>
+        {/* Not EC */}
+        <div className="bg-amber-50/70 border border-amber-200 rounded-xl p-3.5 shadow-xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 flex items-center space-x-1">
+            <Store className="w-3 h-3 text-amber-600" />
+            <span>Not EC (Toko Belum Order)</span>
+          </span>
           <div className="mt-1 flex items-baseline space-x-2">
-            <div className="font-mono font-bold text-xl text-purple-700">
-              {summary.totalQty}
+            <div className="font-mono font-bold text-xl text-amber-700">
+              {totalNotEcOriginal}
             </div>
-            <span className="text-xs text-purple-600">Unit Produk</span>
+            <span className="text-xs text-amber-600">Toko (Real Call - EC)</span>
           </div>
         </div>
       </div>
 
-      {/* 3. DOF & FINANSIAL RECONCILIATION SUMMARY (DIPERJELAS) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-        {/* Total DOF Fee (20%) */}
-        <div className="bg-gradient-to-br from-indigo-900 to-indigo-950 text-white rounded-2xl p-4 shadow-sm border border-indigo-800 relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 flex items-center space-x-1">
-              <Zap className="w-3.5 h-3.5 text-indigo-400" />
-              <span>TOTAL DOF FEE (20%)</span>
-            </span>
-            <span className="bg-indigo-700/60 text-indigo-200 text-[9px] font-black px-2 py-0.5 rounded border border-indigo-500/40">
-              Delivery On Fee
-            </span>
-          </div>
-          <div className="text-xl sm:text-2xl font-bold text-indigo-200 mt-2 font-mono">
-            {formatRupiah(summary.totalDofFee, true)}
-          </div>
-          <p className="text-[11px] text-indigo-300/80 mt-1">
-            20% Fee Distribusi dari Harga Grosir (HPP)
-          </p>
-        </div>
-
-        {/* Total Dasar Grosir */}
+      {/* 3. Sales & Omset Summary Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {/* Total Unit Qty */}
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center space-x-1">
-              <DollarSign className="w-3.5 h-3.5 text-slate-500" />
-              <span>TOTAL HARGA GROSIR (HPP)</span>
-            </span>
-            <span className="bg-slate-100 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded">
-              Dasar
-            </span>
-          </div>
-          <div className="text-xl sm:text-2xl font-bold text-slate-800 mt-2 font-mono">
-            {formatRupiah(summary.totalGrosir, true)}
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center space-x-1">
+            <Layers className="w-3.5 h-3.5 text-purple-600" />
+            <span>TOTAL QTY TERJUAL</span>
+          </span>
+          <div className="text-2xl font-extrabold text-slate-800 mt-2 font-mono">
+            {summary.totalQty} <span className="text-sm font-normal text-slate-500">Unit</span>
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
-            Total HPP Grosir sebelum SHJ &amp; Fee
+            Total semua item produk yang berhasil terjual hari ini.
           </p>
         </div>
 
-        {/* Total SHJ (Retail+ - Grosir) */}
-        <div className="bg-emerald-50/90 border border-emerald-300 rounded-2xl p-4 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 flex items-center space-x-1">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
-              <span>TOTAL MARGIN SHJ</span>
-            </span>
-            <span className="bg-emerald-200 text-emerald-900 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-400">
-              Retail+ - Grosir
-            </span>
+        {/* Produk Fokus (PF A & PF B) */}
+        <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 flex items-center space-x-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+            <span>PENCAPAIAN PRODUK FOKUS (PF)</span>
+          </span>
+          <div className="text-xl font-bold text-slate-800 mt-2 font-mono">
+            {formatRupiah(summary.omsetPfA + summary.omsetPfB, true)}
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-emerald-700 mt-2 font-mono">
-            {formatRupiah(summary.totalShj, true)}
-          </div>
-          <p className="text-[11px] text-emerald-700 mt-1">
-            Selisih Harga Jual (SHJ Motoris)
+          <p className="text-[11px] text-slate-500 mt-1">
+            PF A: {summary.qtyPfA} unit ({formatRupiah(summary.omsetPfA, true)}) | PF B: {summary.qtyPfB} unit ({formatRupiah(summary.omsetPfB, true)})
           </p>
         </div>
 
-        {/* 4. Total Setoran (Retail+) */}
+        {/* Total Setoran Omset (Retail) */}
         <div className="bg-slate-900 text-white rounded-2xl p-4 shadow-sm border border-slate-800">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center space-x-1">
-              <DollarSign className="w-3.5 h-3.5 text-emerald-400" />
-              <span>4. TOTAL SETORAN (RETAIL+)</span>
+              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
+              <span>TOTAL OMSET SETORAN</span>
             </span>
             <span className="bg-emerald-500/20 text-emerald-300 text-[9px] font-black px-2 py-0.5 rounded border border-emerald-500/30">
               Wajib Setor
             </span>
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-emerald-300 mt-2 font-mono truncate">
+          <div className="text-2xl font-extrabold text-emerald-300 mt-2 font-mono truncate">
             {formatRupiah(summary.totalSetoran, true)}
           </div>
           <p className="text-[11px] text-slate-400 mt-1 truncate">
@@ -1144,69 +910,26 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         </div>
       </div>
 
-      {/* 4. Section Produk Fokus (PF) & NBC Input Table dengan DOF & SHJ LENGKAP */}
+      {/* 4. Section Produk Fokus (PF) & NBC Input Table */}
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
         <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3 bg-slate-50/50">
           <div>
             <h2 className="text-sm font-bold text-slate-900 flex items-center space-x-2">
               <Layers className="w-4 h-4 text-emerald-600" />
-              <span>Daftar Produk: Rincian DOF, Grosir, SHJ, dan Omset Setoran</span>
+              <span>Daftar Produk: Input Penjualan dan Omset Retail</span>
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              {selectedWilayah === 'Cianjur'
-                ? 'Pilih lokasi loading di samping setiap nama produk (Panjunan atau Sirawing) untuk otomatis memperbarui harga grosir & margin SHJ.'
-                : 'Isi Qty untuk menghitung otomatis DOF Fee (20%), Margin SHJ, dan Setoran Retail+.'
-              }
+              Isi Qty untuk menghitung otomatis Total Omset Setoran Penjualan ({activeSubdistInfo.label}).
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {selectedWilayah === 'Cianjur' && (
-              <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-xl p-1 shadow-2xs">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 px-1.5 flex items-center gap-1">
-                  <Building2 className="w-3 h-3 text-blue-600" />
-                  <span>Setel Semua:</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleSetAllItemsSubdist('PANJUNAN_CIANJUR')}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                    selectedSubdist === 'PANJUNAN_CIANJUR'
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                  title="Setel semua SKU ke Subdist Panjunan"
-                >
-                  <span>Panjunan</span>
-                  {selectedSubdist === 'PANJUNAN_CIANJUR' && <Check className="w-3 h-3" />}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleSetAllItemsSubdist('SIRAWING')}
-                  className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                    selectedSubdist === 'SIRAWING'
-                      ? 'bg-amber-600 text-white shadow-xs'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                  title="Setel semua SKU ke Grosir Sirawing"
-                >
-                  <span>Sirawing</span>
-                  {selectedSubdist === 'SIRAWING' && <Check className="w-3 h-3" />}
-                </button>
-              </div>
-            )}
-
-            <div className="flex items-center space-x-1.5 text-xs">
-              <span className="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-300 text-[10px]">
-                PF = Fokus
-              </span>
-              <span className="bg-indigo-100 text-indigo-900 font-bold px-2 py-0.5 rounded border border-indigo-200 text-[10px]">
-                DOF = 20%
-              </span>
-              <span className="bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded text-[10px]">
-                NBC
-              </span>
-            </div>
+          <div className="flex items-center space-x-1.5 text-xs">
+            <span className="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-300 text-[10px]">
+              PF = Fokus
+            </span>
+            <span className="bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded text-[10px]">
+              NBC
+            </span>
           </div>
         </div>
 
@@ -1217,35 +940,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 <th className="p-3 w-10 text-center">No</th>
                 <th className="p-3">Kat</th>
                 <th className="p-3">Nama Produk SKU</th>
-                {selectedWilayah === 'Cianjur' && (
-                  <th className="p-3 text-center min-w-[170px] bg-slate-100/90 text-slate-800">
-                    <div className="flex items-center justify-center space-x-1">
-                      <Building2 className="w-3.5 h-3.5 text-blue-600" />
-                      <span>Asal SKU</span>
-                    </div>
-                  </th>
-                )}
                 <th className="p-3 min-w-[140px] text-center">Qty (Unit)</th>
-                <th className="p-3 text-right">
-                  <div className="flex items-center justify-end space-x-1">
-                    <span>Harga Grosir</span>
-                    <span className="text-[10px] bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded font-mono">
-                      {selectedWilayah === 'Cianjur' ? 'Per-SKU' : activeSubdistInfo.shortLabel}
-                    </span>
-                  </div>
-                </th>
-                <th className="p-3 text-right text-indigo-700 bg-indigo-50/40">DOF Fee (20%)</th>
-                <th className="p-3 text-right text-blue-700">Harga Retail+</th>
-                <th className="p-3 text-right text-emerald-700 bg-emerald-50/50">SHJ (Retail+ - Grosir)</th>
-                <th className="p-3 text-right">Omset Subtotal</th>
+                <th className="p-3 text-right text-blue-700">Harga Retail</th>
+                <th className="p-3 text-right">Subtotal Omset</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-slate-700">
               {calculatedItems.map((item, index) => {
                 const p = item.product;
-                const eff = item.effectiveProduct;
                 const isSelected = item.qty > 0;
-                const dofPct = (eff.persentase_dof * 100).toFixed(0);
 
                 return (
                   <tr 
@@ -1284,49 +987,6 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                         <span>Panggilan: <strong>{item.shortName}</strong></span>
                       </div>
                     </td>
-
-                    {/* Dedicated Asal SKU Cell for Cianjur (Subdist Panjunan vs Grosir Sirawing) */}
-                    {selectedWilayah === 'Cianjur' && (
-                      <td className="p-3 text-center">
-                        <div className="inline-flex rounded-xl p-1 bg-slate-100 border border-slate-200 shadow-2xs">
-                          <button
-                            type="button"
-                            onClick={() => handleSetItemSubdist(p.kode_produk, 'PANJUNAN_CIANJUR')}
-                            className={`px-2.5 py-1 text-xs font-extrabold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                              item.itemSubdistKey === 'PANJUNAN_CIANJUR'
-                                ? 'bg-blue-600 text-white shadow-xs ring-1 ring-blue-700'
-                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/80'
-                            }`}
-                            title="Berasal dari Subdist Panjunan"
-                          >
-                            <span>Panjunan</span>
-                            {item.itemSubdistKey === 'PANJUNAN_CIANJUR' && <Check className="w-3 h-3" />}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleSetItemSubdist(p.kode_produk, 'SIRAWING')}
-                            className={`px-2.5 py-1 text-xs font-extrabold rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                              item.itemSubdistKey === 'SIRAWING'
-                                ? 'bg-amber-600 text-white shadow-xs ring-1 ring-amber-700'
-                                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/80'
-                            }`}
-                            title="Berasal dari Grosir Sirawing"
-                          >
-                            <span>Sirawing</span>
-                            {item.itemSubdistKey === 'SIRAWING' && <Check className="w-3 h-3" />}
-                          </button>
-                        </div>
-                        <div className="mt-1">
-                          <span className={`text-[9.5px] font-mono font-bold px-1.5 py-0.5 rounded border ${
-                            item.itemSubdistKey === 'SIRAWING'
-                              ? 'bg-amber-50 text-amber-900 border-amber-200'
-                              : 'bg-blue-50 text-blue-900 border-blue-200'
-                          }`}>
-                            {item.itemSubdistKey === 'SIRAWING' ? 'Grosir Sirawing' : 'Subdist Panjunan'}
-                          </span>
-                        </div>
-                      </td>
-                    )}
 
                     {/* Qty Controls */}
                     <td className="p-3">
@@ -1375,105 +1035,9 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                       </div>
                     </td>
 
-                    {/* Harga Grosir (Subdist Aware with inline edit) */}
-                    <td className="p-3 text-right font-mono text-slate-700">
-                      {inlineEditingSku === p.kode_produk ? (
-                        <div className="flex items-center justify-end space-x-1">
-                          <input
-                            type="number"
-                            step="any"
-                            value={inlineGrosirInput}
-                            onChange={(e) => setInlineGrosirInput(e.target.value)}
-                            className="w-20 bg-white border border-blue-500 rounded px-1.5 py-1 text-xs text-right font-mono font-bold"
-                            autoFocus
-                          />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const val = parseFloat(inlineGrosirInput);
-                              if (!isNaN(val)) {
-                                handleSaveSubdistPrice(item.itemSubdistKey, p.kode_produk, val);
-                              }
-                              setInlineEditingSku(null);
-                            }}
-                            className="p-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded cursor-pointer"
-                            title="Simpan harga"
-                          >
-                            <Check className="w-3 h-3" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setInlineEditingSku(null)}
-                            className="p-1 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded cursor-pointer"
-                            title="Batal"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="group flex items-center justify-end space-x-1">
-                          <div className="text-right">
-                            <div className="flex items-center justify-end space-x-1">
-                              <span className="font-semibold text-slate-800">
-                                {formatRupiah(eff.harga_grosir, true)}
-                              </span>
-                              {selectedWilayah === 'Cianjur' && (
-                                <span className={`text-[9px] font-extrabold px-1 rounded border ${
-                                  item.itemSubdistKey === 'SIRAWING'
-                                    ? 'bg-amber-100 text-amber-800 border-amber-300'
-                                    : 'bg-blue-100 text-blue-800 border-blue-300'
-                                }`}>
-                                  {item.itemSubdistKey === 'SIRAWING' ? 'Sirawing' : 'Panjunan'}
-                                </span>
-                              )}
-                              {item.isCustomPrice && (
-                                <span className="text-[9px] bg-amber-100 text-amber-800 font-bold px-1 rounded border border-amber-300">
-                                  Kustom
-                                </span>
-                              )}
-                            </div>
-                            {item.qty > 0 && (
-                              <div className="text-[10px] text-slate-400">
-                                Tot: {formatRupiah(item.subGrosir, true)}
-                              </div>
-                            )}
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setInlineEditingSku(p.kode_produk);
-                              setInlineGrosirInput(eff.harga_grosir.toString());
-                            }}
-                            className="opacity-0 group-hover:opacity-100 transition p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-700 cursor-pointer"
-                            title={`Ubah harga grosir di ${activeSubdistInfo.shortLabel}`}
-                          >
-                            <Edit3 className="w-3 h-3" />
-                          </button>
-                        </div>
-                      )}
-                    </td>
-
-                    {/* DOF Fee (20%) */}
-                    <td className="p-3 text-right font-mono bg-indigo-50/30 text-indigo-800">
-                      <div className="font-bold">{formatRupiah(item.shj.dofFee, true)}</div>
-                      <div className="text-[10px] text-indigo-600">
-                        {dofPct}% {item.qty > 0 && `(Tot: ${formatRupiah(item.subDofFee, true)})`}
-                      </div>
-                    </td>
-
-                    {/* Harga Retail+ */}
+                    {/* Harga Retail */}
                     <td className="p-3 text-right font-mono font-bold text-blue-600">
-                      {formatRupiah(eff.harga_retail, true)}
-                    </td>
-
-                    {/* SHJ (Retail+ - Grosir) */}
-                    <td className="p-3 text-right font-mono bg-emerald-50/20">
-                      <div className="font-bold text-emerald-700">{formatRupiah(item.shj.shj, true)}</div>
-                      {item.qty > 0 && (
-                        <div className="text-[10px] text-emerald-600 font-semibold">
-                          Total: {formatRupiah(item.subShj, true)}
-                        </div>
-                      )}
+                      {formatRupiah(p.harga_retail, true)}
                     </td>
 
                     {/* Omset Subtotal */}
@@ -1488,23 +1052,14 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             </tbody>
             <tfoot>
               <tr className="bg-slate-900 text-white font-bold">
-                <td colSpan={selectedWilayah === 'Cianjur' ? 4 : 3} className="p-3 text-right">
+                <td colSpan={3} className="p-3 text-right">
                   TOTAL KESELURUHAN:
                 </td>
                 <td className="p-3 text-center font-mono text-purple-300 text-sm">
                   {summary.totalQty} Unit
                 </td>
-                <td className="p-3 text-right font-mono text-slate-300">
-                  {formatRupiah(summary.totalGrosir, true)}
-                </td>
-                <td className="p-3 text-right font-mono text-indigo-300 text-sm">
-                  {formatRupiah(summary.totalDofFee, true)}
-                </td>
                 <td className="p-3 text-right font-mono text-blue-300">
                   -
-                </td>
-                <td className="p-3 text-right font-mono text-emerald-400 text-sm">
-                  {formatRupiah(summary.totalShj, true)}
                 </td>
                 <td className="p-3 text-right font-mono text-emerald-300 text-sm">
                   {formatRupiah(summary.totalSetoran, true)}
@@ -1766,7 +1321,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         </div>
       </div>
 
-      {/* 6. Live WhatsApp Preview: Tab Generator Format Daily vs Detail DOF */}
+      {/* 6. Live WhatsApp Preview */}
       <div className="bg-slate-900 text-slate-100 rounded-2xl p-5 border border-slate-800 shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
           <div className="flex items-center space-x-2">
@@ -1778,23 +1333,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 Live Preview: Generator Pesan WhatsApp
               </h3>
               <p className="text-[11px] text-slate-400">
-                Pilih format yang ingin disalin langsung ke grup WA.
+                Pilih format yang ingin disalin langsung ke grup WhatsApp.
               </p>
             </div>
           </div>
 
           {/* Format Selector Tabs */}
           <div className="flex items-center space-x-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
-            <button
-              onClick={() => setActiveReportTab('dof_detail')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
-                activeReportTab === 'dof_detail'
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              1. Laporan Rekon DOF &amp; SHJ
-            </button>
             <button
               onClick={() => setActiveReportTab('daily')}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
@@ -1803,7 +1348,17 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              2. Report Daily Activity
+              1. Report Daily Activity
+            </button>
+            <button
+              onClick={() => setActiveReportTab('itemized')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                activeReportTab === 'itemized'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              2. Rincian Penjualan Item
             </button>
           </div>
 
@@ -1816,7 +1371,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             }`}
           >
             {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            <span>{copied ? 'BERHASIL TERSALIN!' : `📋 SALIN FORMAT ${activeReportTab === 'dof_detail' ? 'DOF & SHJ' : 'DAILY'} KE WA`}</span>
+            <span>{copied ? 'BERHASIL TERSALIN!' : `📋 SALIN FORMAT ${activeReportTab === 'daily' ? 'DAILY' : 'RINCIAN'} KE WA`}</span>
           </button>
         </div>
 
@@ -1827,17 +1382,6 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </pre>
         </div>
       </div>
-
-      {/* Subdist Wholesale Price Management & Comparison Modal (PANJUNAN vs SIRAWING) */}
-      <SubdistPriceManagerModal
-        isOpen={isPriceModalOpen}
-        onClose={() => setIsPriceModalOpen(false)}
-        products={products}
-        activeSubdist={selectedSubdist}
-        customOverrides={customOverrides}
-        onSavePrice={handleSaveSubdistPrice}
-        onResetPrices={handleResetCustomPrices}
-      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import { Product } from '../types';
-import { formatRupiah, formatDecimal, formatPercentage, calculateSHJ } from './mathUtils';
+import { formatRupiah, formatDecimal } from './mathUtils';
 
 export interface OrderReportData {
   salesmanName: string;
@@ -54,7 +54,7 @@ export function generatePdfReport(data: OrderReportData) {
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
-  doc.text(`MOTORIS MMTW ${wilayahLabel}${subdistLabel} | DoF & Struktur Harga Jual (SHJ)`, 39, 17.5);
+  doc.text(`MOTORIS MMTW ${wilayahLabel}${subdistLabel} | Laporan Penjualan & Omset Setoran`, 39, 17.5);
 
   // 2. Info / Metadata Section
   doc.setTextColor(textColor[0], textColor[1], textColor[2]);
@@ -91,9 +91,9 @@ export function generatePdfReport(data: OrderReportData) {
   doc.text(data.salesmanName || 'Salesman Lapangan', 45, currentY + 12.5);
 
   doc.setFont('helvetica', 'bold');
-  doc.text('Subdist Pengambilan:', 110, currentY + 12.5);
+  doc.text('Pangkalan:', 110, currentY + 12.5);
   doc.setFont('helvetica', 'normal');
-  doc.text(data.subdistName ? `${data.subdistName} (${wilayahLabel})` : wilayahLabel, 142, currentY + 12.5);
+  doc.text(data.subdistName ? `${data.subdistName} (${wilayahLabel})` : wilayahLabel, 135, currentY + 12.5);
 
   // Row 3: Catatan (Word-wrapped to prevent cut-off)
   doc.setFont('helvetica', 'bold');
@@ -115,21 +115,16 @@ export function generatePdfReport(data: OrderReportData) {
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
 
   doc.text('No', 16, currentY + 5.5);
-  doc.text('Kode', 24, currentY + 5.5);
-  doc.text('Nama Produk', 46, currentY + 5.5);
-  doc.text('Qty', 98, currentY + 5.5, { align: 'right' });
-  doc.text('Grosir (Rp)', 122, currentY + 5.5, { align: 'right' });
-  doc.text('Retail+ (Rp)', 146, currentY + 5.5, { align: 'right' });
-  doc.text('SHJ (Selisih)', 170, currentY + 5.5, { align: 'right' });
-  doc.text('DoF Fee', 194, currentY + 5.5, { align: 'right' });
+  doc.text('Kode SKU', 24, currentY + 5.5);
+  doc.text('Nama Produk', 52, currentY + 5.5);
+  doc.text('Qty (Unit)', 118, currentY + 5.5, { align: 'right' });
+  doc.text('Harga Retail', 155, currentY + 5.5, { align: 'right' });
+  doc.text('Subtotal Omset', 194, currentY + 5.5, { align: 'right' });
 
   currentY += 8;
 
   let totalQty = 0;
-  let totalGrosir = 0;
   let totalRetail = 0;
-  let totalShj = 0;
-  let totalDofFee = 0;
 
   if (activeItems.length === 0) {
     doc.setFont('helvetica', 'italic');
@@ -142,17 +137,10 @@ export function generatePdfReport(data: OrderReportData) {
 
     activeItems.forEach((item, index) => {
       const p = item.product;
-      const shj = calculateSHJ(p.harga_grosir, p.harga_retail, p.persentase_dof);
-      const subGrosir = p.harga_grosir * item.qty;
       const subRetail = p.harga_retail * item.qty;
-      const subShj = shj.shj * item.qty;
-      const subDofFee = shj.dofFee * item.qty;
 
       totalQty += item.qty;
-      totalGrosir += subGrosir;
       totalRetail += subRetail;
-      totalShj += subShj;
-      totalDofFee += subDofFee;
 
       // Row background alternating
       if (index % 2 === 1) {
@@ -164,21 +152,16 @@ export function generatePdfReport(data: OrderReportData) {
       doc.text(`${index + 1}`, 16, currentY + 5);
       doc.text(p.kode_produk, 24, currentY + 5);
 
-      // Truncate long name if needed, append loading subdist tag if provided
-      const labelTag = item.subdistLabel ? ` [${item.subdistLabel}]` : '';
-      const maxLen = item.subdistLabel ? 22 : 28;
+      const maxLen = 42;
       const baseName = p.nama_produk.length > maxLen ? p.nama_produk.substring(0, maxLen - 2) + '..' : p.nama_produk;
-      const displayName = baseName + labelTag;
-      doc.text(displayName, 46, currentY + 5);
+      doc.text(baseName, 52, currentY + 5);
 
       doc.setFont('helvetica', 'bold');
-      doc.text(`${item.qty}`, 98, currentY + 5, { align: 'right' });
+      doc.text(`${item.qty}`, 118, currentY + 5, { align: 'right' });
       doc.setFont('helvetica', 'normal');
 
-      doc.text(formatDecimal(subGrosir), 122, currentY + 5, { align: 'right' });
-      doc.text(formatDecimal(subRetail), 146, currentY + 5, { align: 'right' });
-      doc.text(formatDecimal(subShj), 170, currentY + 5, { align: 'right' });
-      doc.text(formatDecimal(subDofFee), 194, currentY + 5, { align: 'right' });
+      doc.text(formatDecimal(p.harga_retail), 155, currentY + 5, { align: 'right' });
+      doc.text(formatDecimal(subRetail), 194, currentY + 5, { align: 'right' });
 
       doc.setDrawColor(241, 245, 249);
       doc.line(14, currentY + 7.5, 196, currentY + 7.5);
@@ -191,38 +174,28 @@ export function generatePdfReport(data: OrderReportData) {
   currentY += 4;
   doc.setDrawColor(203, 213, 225);
   doc.setFillColor(248, 250, 252);
-  doc.rect(14, currentY, 182, 24, 'FD');
+  doc.rect(14, currentY, 182, 16, 'FD');
 
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.text('RINGKASAN TOTAL KALKULASI:', 18, currentY + 6);
+  doc.text('RINGKASAN TOTAL PENJUALAN:', 18, currentY + 6);
 
   doc.setFontSize(8);
   doc.setTextColor(textColor[0], textColor[1], textColor[2]);
 
-  doc.text(`Total Unit / Qty:`, 18, currentY + 13);
+  doc.text(`Total Unit Terjual:`, 18, currentY + 12);
   doc.setFont('helvetica', 'bold');
-  doc.text(`${totalQty} Unit`, 55, currentY + 13);
+  doc.text(`${totalQty} Unit`, 55, currentY + 12);
 
   doc.setFont('helvetica', 'normal');
-  doc.text(`Total Harga Grosir:`, 18, currentY + 19);
-  doc.setFont('helvetica', 'bold');
-  doc.text(formatRupiah(totalGrosir, true), 55, currentY + 19);
-
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Total SHJ (Selisih):`, 105, currentY + 13);
-  doc.setFont('helvetica', 'bold');
-  doc.text(formatRupiah(totalShj, true), 145, currentY + 13);
-
-  doc.setFont('helvetica', 'normal');
-  doc.text(`Total Harga Retail+:`, 105, currentY + 19);
+  doc.text(`TOTAL SETORAN (OMSET):`, 105, currentY + 12);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(accentColor[0], accentColor[1], accentColor[2]);
-  doc.text(formatRupiah(totalRetail, true), 145, currentY + 19);
+  doc.text(formatRupiah(totalRetail, true), 160, currentY + 12);
 
   // 5. Signature Section (Dibuat Oleh & Penerima / Toko)
-  currentY += 32;
+  currentY += 28;
   doc.setTextColor(textColor[0], textColor[1], textColor[2]);
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -242,10 +215,11 @@ export function generatePdfReport(data: OrderReportData) {
   doc.setFont('helvetica', 'italic');
   doc.setFontSize(6.5);
   doc.setTextColor(mutedText[0], mutedText[1], mutedText[2]);
-  doc.text('* Dokumen Laporan Harian dicetak otomatis dari Kalbe Motoris MMTW Sukabumi (Kalkulator DOF & SHJ).', 14, 285);
+  const regionName = data.wilayah || 'Sukabumi';
+  doc.text(`* Dokumen Laporan Harian dicetak otomatis dari Kalbe Motoris MMTW ${regionName}.`, 14, 285);
 
   const cleanStoreName = (data.storeName || 'Laporan').replace(/[^a-zA-Z0-9]/g, '_');
-  const filename = `Laporan_Harian_Kalbe_MMTW_Sukabumi_${cleanStoreName}_${data.reportDate.replace(/\//g, '-')}.pdf`;
+  const filename = `Laporan_Harian_Kalbe_MMTW_${regionName}_${cleanStoreName}_${data.reportDate.replace(/\//g, '-')}.pdf`;
   doc.save(filename);
 }
 
@@ -262,7 +236,7 @@ export function generateDofPdf(order: any) {
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
-  doc.text(`DELIVERY ORDER FORM (DOF) - ${order.no_dof}`, 14, 11);
+  doc.text(`DELIVERY ORDER FORM - ${order.no_dof}`, 14, 11);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(8.5);
@@ -302,16 +276,12 @@ export function generateDofPdf(order: any) {
   currentY += 6;
   doc.setFont('helvetica', 'bold');
   doc.text(`Grand Total: ${formatRupiah(order.grand_total, true)}`, 192, currentY, { align: 'right' });
-  if (order.total_dof_fee > 0) {
-    currentY += 6;
-    doc.text(`Total DoF Fee: ${formatRupiah(order.total_dof_fee, true)}`, 192, currentY, { align: 'right' });
-  }
 
   doc.save(`${order.no_dof}.pdf`);
 }
 
 export function generateTextSummary(order: any): string {
-  let text = `📦 *DELIVERY ORDER FORM (DOF)*\n`;
+  let text = `📦 *DELIVERY ORDER FORM*\n`;
   text += `*No:* ${order.no_dof}\n`;
   text += `*Toko:* ${order.nama_toko}\n`;
   text += `*Harga:* ${order.kategori_harga}\n`;
@@ -321,9 +291,7 @@ export function generateTextSummary(order: any): string {
     text += `${i + 1}. ${d.nama_produk || d.kode_produk} - ${d.qty}x @ ${formatRupiah(d.harga_satuan, true)} = ${formatRupiah(d.subtotal, true)}\n`;
   });
   text += `\n*Grand Total:* ${formatRupiah(order.grand_total, true)}\n`;
-  if (order.total_dof_fee > 0) {
-    text += `*Total DoF Fee:* ${formatRupiah(order.total_dof_fee, true)}\n`;
-  }
   return text;
 }
+
 

@@ -37,11 +37,11 @@ export function Navbar({
                   LAPORAN HARIAN
                 </span>
                 <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded border border-emerald-500/30">
-                  DOF & SHJ
+                  MOTORIS
                 </span>
               </div>
               <p className="text-[11px] text-emerald-400 font-semibold tracking-wide">
-                MOTORIS MMTW SUKABUMI (PANJUNAN)
+                SISTEM LAPORAN HARIAN MOTORIS KALBE
               </p>
             </div>
           </div>
@@ -62,7 +62,7 @@ export function Navbar({
             }`}
           >
             <Calculator className="w-4 h-4 text-emerald-400" />
-            <span>Sukabumi (Panjunan)</span>
+            <span>Kalkulator Penjualan</span>
             <span className="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.2 rounded font-bold border border-emerald-500/30">
               Utama
             </span>
@@ -77,7 +77,7 @@ export function Navbar({
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Master Data & SHJ Monitor</span>
+            <span>Master Data Produk</span>
           </button>
 
           <button

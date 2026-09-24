@@ -1,6 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { Product } from '../types';
-import { calculateSHJ, formatRupiah, formatDecimal, formatPercentage } from '../utils/mathUtils';
+import { formatRupiah, formatDecimal } from '../utils/mathUtils';
 import { 
   Plus, 
   Edit3, 
@@ -8,14 +8,9 @@ import {
   Save, 
   X, 
   RotateCcw, 
-  Calculator, 
-  Percent, 
   Search, 
   Sparkles,
-  TrendingUp,
-  AlertCircle,
-  Layers,
-  Check
+  Layers
 } from 'lucide-react';
 
 interface ProductMasterDataProps {
@@ -40,9 +35,7 @@ export function ProductMasterData({
   // Form states
   const [formKode, setFormKode] = useState<string>('');
   const [formNama, setFormNama] = useState<string>('');
-  const [formGrosir, setFormGrosir] = useState<string>('');
   const [formRetail, setFormRetail] = useState<string>('');
-  const [formDof, setFormDof] = useState<string>('0.20');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isResetting, setIsResetting] = useState<boolean>(false);
 
@@ -56,9 +49,7 @@ export function ProductMasterData({
     setIsAdding(false);
     setFormKode(product.kode_produk);
     setFormNama(product.nama_produk);
-    setFormGrosir(product.harga_grosir.toString());
     setFormRetail(product.harga_retail.toString());
-    setFormDof(product.persentase_dof.toString());
   };
 
   const cancelForm = () => {
@@ -66,23 +57,19 @@ export function ProductMasterData({
     setIsAdding(false);
     setFormKode('');
     setFormNama('');
-    setFormGrosir('');
     setFormRetail('');
-    setFormDof('0.20');
   };
 
   const handleSaveProduct = async (e: FormEvent) => {
     e.preventDefault();
-    if (!formNama.trim() || !formGrosir || !formRetail) {
-      alert('Nama produk, harga grosir, dan harga retail wajib diisi');
+    if (!formNama.trim() || !formRetail) {
+      alert('Nama produk dan harga retail wajib diisi');
       return;
     }
 
     setIsSaving(true);
     try {
-      const grosir = parseFloat(formGrosir);
       const retail = parseFloat(formRetail);
-      const dof = parseFloat(formDof);
 
       if (isAdding) {
         if (!formKode.trim()) {
@@ -92,16 +79,14 @@ export function ProductMasterData({
         await onAddProduct({
           kode_produk: formKode.trim().toUpperCase(),
           nama_produk: formNama.trim(),
-          harga_grosir: grosir,
+          harga_grosir: 0,
           harga_retail: retail,
-          persentase_dof: isNaN(dof) ? 0.20 : dof
+          persentase_dof: 0.00
         });
       } else if (editingKode) {
         await onUpdateProduct(editingKode, {
           nama_produk: formNama.trim(),
-          harga_grosir: grosir,
-          harga_retail: retail,
-          persentase_dof: isNaN(dof) ? 0.20 : dof
+          harga_retail: retail
         });
       }
       cancelForm();
@@ -132,14 +117,6 @@ export function ProductMasterData({
     }
   };
 
-  // Preview calculation for form
-  const formPreview = (() => {
-    const grosir = parseFloat(formGrosir) || 0;
-    const retail = parseFloat(formRetail) || 0;
-    const dof = parseFloat(formDof) || 0;
-    return calculateSHJ(grosir, retail, dof);
-  })();
-
   return (
     <div className="space-y-4">
       {/* Top Bar */}
@@ -147,13 +124,13 @@ export function ProductMasterData({
         <div>
           <div className="flex items-center space-x-2 text-xs font-bold text-blue-700 uppercase tracking-wider">
             <Layers className="w-3.5 h-3.5" />
-            <span>Master Data & SHJ Monitoring</span>
+            <span>Master Data Produk</span>
           </div>
           <h2 className="text-lg font-black text-slate-900 mt-0.5">
-            Manajemen Produk, DoF Fee & Struktur Harga Jual
+            Manajemen Produk &amp; Harga
           </h2>
           <p className="text-xs text-slate-500">
-            Kelola harga grosir, harga retail, dan persentase DoF (dinamis, tanpa hardcode 20%).
+            Kelola kode produk, harga grosir, dan harga retail.
           </p>
         </div>
 
@@ -183,7 +160,7 @@ export function ProductMasterData({
         </div>
       </div>
 
-      {/* Add / Edit Form Modal or Inline Drawer */}
+      {/* Add / Edit Form */}
       {(isAdding || editingKode) && (
         <form onSubmit={handleSaveProduct} className="bg-slate-900 text-white rounded-2xl p-4 shadow-xl border border-slate-800 animate-in fade-in duration-150">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -200,7 +177,7 @@ export function ProductMasterData({
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mt-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
             <div>
               <label className="block text-[11px] font-semibold text-slate-300 mb-1">Kode Produk (PK)</label>
               <input
@@ -216,7 +193,7 @@ export function ProductMasterData({
               />
             </div>
 
-            <div className="lg:col-span-2">
+            <div className="md:col-span-2">
               <label className="block text-[11px] font-semibold text-slate-300 mb-1">Nama Produk Lengkap</label>
               <input
                 type="text"
@@ -229,20 +206,7 @@ export function ProductMasterData({
             </div>
 
             <div>
-              <label className="block text-[11px] font-semibold text-slate-300 mb-1">Harga Beli Grosir (Rp)</label>
-              <input
-                type="number"
-                step="0.01"
-                value={formGrosir}
-                onChange={(e) => setFormGrosir(e.target.value)}
-                placeholder="5141.52"
-                className="w-full px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-white font-mono focus:border-blue-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-300 mb-1">Harga Jual Retail + (Rp)</label>
+              <label className="block text-[11px] font-semibold text-slate-300 mb-1">Harga Jual Retail (Rp)</label>
               <input
                 type="number"
                 step="0.01"
@@ -252,50 +216,6 @@ export function ProductMasterData({
                 className="w-full px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-white font-mono focus:border-blue-500 focus:outline-none"
                 required
               />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 pt-3 border-t border-slate-800 items-end">
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-300 mb-1">
-                Persentase DoF Fee (Dinamis: 0.20 = 20%, 0.00 = Bebas Fee)
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  max="1"
-                  value={formDof}
-                  onChange={(e) => setFormDof(e.target.value)}
-                  className="w-28 px-3 py-1.5 rounded-lg text-xs bg-slate-800 border border-slate-700 text-white font-mono"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setFormDof('0.20')}
-                  className="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-amber-300 rounded border border-slate-700"
-                >
-                  Set 20%
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormDof('0.00')}
-                  className="px-2 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded border border-slate-700"
-                >
-                  Set 0% (Bebas Fee)
-                </button>
-              </div>
-            </div>
-
-            {/* Live SHJ Preview */}
-            <div className="bg-slate-800/80 rounded-xl p-2.5 border border-slate-700 text-xs">
-              <div className="text-[10px] text-slate-400 uppercase font-semibold">Simulasi SHJ Preview:</div>
-              <div className="flex items-center justify-between mt-1 text-slate-200">
-                <span>DoF Fee: <strong className="text-amber-400">{formatRupiah(formPreview.dofFee, true)}</strong></span>
-                <span>Total HPP DoF: <strong className="text-blue-400">{formatRupiah(formPreview.totalHppDof, true)}</strong></span>
-                <span>Margin Retail: <strong className="text-emerald-400">{formatRupiah(formPreview.marginRp, true)} ({formPreview.marginPersen.toFixed(1)}%)</strong></span>
-              </div>
             </div>
           </div>
 
@@ -336,7 +256,7 @@ export function ProductMasterData({
         </div>
       </div>
 
-      {/* SHJ & Product Table */}
+      {/* Product Table */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
@@ -344,45 +264,20 @@ export function ProductMasterData({
               <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 text-[11px] uppercase tracking-wider font-bold">
                 <th className="p-3">Kode SKU</th>
                 <th className="p-3">Nama Produk</th>
-                <th className="p-3 text-right">Harga Grosir</th>
-                <th className="p-3 text-right">Harga Retail+</th>
-                <th className="p-3 text-right text-emerald-700 bg-emerald-50/50">SHJ (Retail+ - Grosir)</th>
-                <th className="p-3 text-center">% DoF</th>
-                <th className="p-3 text-right">DoF Fee (Rp)</th>
-                <th className="p-3 text-right">HPP DoF</th>
+                <th className="p-3 text-right">Harga Retail</th>
                 <th className="p-3 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {filteredProducts.map((p, idx) => {
-                const shj = calculateSHJ(p.harga_grosir, p.harga_retail, p.persentase_dof);
                 const isEven = idx % 2 === 0;
 
                 return (
                   <tr key={p.kode_produk} className={isEven ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/40 hover:bg-slate-50'}>
                     <td className="p-3 font-mono font-bold text-slate-800">{p.kode_produk}</td>
                     <td className="p-3 font-semibold text-slate-900">{p.nama_produk}</td>
-                    <td className="p-3 text-right font-mono font-medium text-slate-800">
-                      {formatRupiah(p.harga_grosir, true)}
-                    </td>
                     <td className="p-3 text-right font-mono font-bold text-blue-600">
                       {formatRupiah(p.harga_retail, true)}
-                    </td>
-                    <td className="p-3 text-right font-mono font-bold text-emerald-700 bg-emerald-50/20">
-                      {formatRupiah(shj.shj, true)}
-                    </td>
-                    <td className="p-3 text-center">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                        p.persentase_dof > 0 ? 'bg-amber-100 text-amber-900 border border-amber-200' : 'bg-emerald-100 text-emerald-900 border border-emerald-200'
-                      }`}>
-                        {formatPercentage(p.persentase_dof)}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right font-mono text-amber-800 font-medium">
-                      {formatRupiah(shj.dofFee, true)}
-                    </td>
-                    <td className="p-3 text-right font-mono text-slate-700 font-semibold">
-                      {formatRupiah(shj.totalHppDof, true)}
                     </td>
                     <td className="p-3 text-center">
                       <div className="flex items-center justify-center space-x-1">

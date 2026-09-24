@@ -5,9 +5,10 @@ export type PriceCategory = 'Grosir' | 'Retail';
 export type Wilayah = 'Sukabumi' | 'Cianjur';
 
 export type SubdistKey = 
-  | 'PANJUNAN_CIANJUR' 
-  | 'SIRAWING' 
-  | 'PANJUNAN_SUKABUMI' 
+  | 'CIKALONG' 
+  | 'CIPANAS' 
+  | 'CIBEBER' 
+  | 'CIRANJANG' 
   | 'CIBADAK' 
   | 'NYALINDUNG' 
   | 'CIKOLE' 

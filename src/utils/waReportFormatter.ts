@@ -1,12 +1,12 @@
 import { Product } from '../types';
-import { formatRupiah, calculateSHJ } from './mathUtils';
+import { formatRupiah } from './mathUtils';
 
 export interface DailyActivityReportParams {
   salesmanName: string;
   userDms: string;
   reportDate: string; // "YYYY-MM-DD" or formatted "Selasa, 01 September 2026"
   wilayah?: string;   // "Cianjur" or "Sukabumi"
-  subdistName?: string; // "PANJUNAN CIANJUR", "SIRAWING", etc.
+  subdistName?: string; // "CIKALONG", "CIPANAS", "CIBADAK", etc.
   
   // 1. Kinerja Kunjungan
   realCall: number;
@@ -28,7 +28,7 @@ export interface DailyActivityReportParams {
   alasanLain?: number;
   totalBranding?: number;
 
-  // Include DoF in Daily Activity text
+  // Optional flag
   includeDofSummary?: boolean;
 }
 
@@ -90,7 +90,7 @@ export const NBC_PRODUCT_SHORT_NAMES: Record<string, string> = {
 };
 
 /**
- * Generate standard REPORT DAILY ACTIVITY text exactly as formatted by user
+ * Generate standard REPORT DAILY ACTIVITY text
  */
 export function generateDailyActivityReport(params: DailyActivityReportParams): string {
   const formattedDate = formatIndonesianFullDate(params.reportDate);
@@ -122,36 +122,9 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
 
   activeNbcItems.forEach(i => {
     const shortName = NBC_PRODUCT_SHORT_NAMES[i.product.kode_produk] || i.product.nama_produk;
-    const originBadge = i.subdistLabel ? ` [${i.subdistLabel}]` : '';
-    nbcSummaryStrings.push(`${shortName} (${i.qty})${originBadge}`);
+    nbcSummaryStrings.push(`${shortName} (${i.qty})`);
     totalQtyNbc += i.qty;
     totalOmsetNbc += (i.product.harga_retail * i.qty);
-  });
-
-  let totalDofFee = 0;
-  let totalShj = 0;
-  let totalGrosir = 0;
-
-  let panjunanQty = 0;
-  let panjunanGrosir = 0;
-  let rawingQty = 0;
-  let rawingGrosir = 0;
-
-  params.items.forEach(i => {
-    if (i.qty > 0) {
-      const shjCalc = calculateSHJ(i.product.harga_grosir, i.product.harga_retail, i.product.persentase_dof);
-      totalDofFee += (shjCalc.dofFee * i.qty);
-      totalShj += (shjCalc.shj * i.qty);
-      totalGrosir += (i.product.harga_grosir * i.qty);
-
-      if (i.subdistLabel?.toLowerCase().includes('raw') || i.subdistLabel?.toLowerCase().includes('siraw')) {
-        rawingQty += i.qty;
-        rawingGrosir += (i.product.harga_grosir * i.qty);
-      } else {
-        panjunanQty += i.qty;
-        panjunanGrosir += (i.product.harga_grosir * i.qty);
-      }
-    }
   });
 
   const totalSetoran = omsetPfA + omsetPfB + totalOmsetNbc;
@@ -176,7 +149,7 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
     text += `Wilayah: *${params.wilayah.toUpperCase()}*\n`;
   }
   if (params.subdistName) {
-    text += `Subdist Pengambilan: *${params.subdistName.toUpperCase()}*\n`;
+    text += `Pangkalan: *${params.subdistName.toUpperCase()}*\n`;
   }
   text += `User DMS: *${params.userDms || 'MMTW-SKI-CIBADAK'}*\n\n`;
 
@@ -185,11 +158,9 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
   text += `EC (Effective Call): ${params.ec || 0}\n\n`;
   text += `NOO (New Open Outlet): ${params.noo || 0}\n\n`;
 
-  text += `2. PENCAPAIAN PRODUK FOKUS (Harga Retail+)\n\n`;
-  const pfALabel = (qtyPfA > 0 && itemPfA?.subdistLabel) ? ` [${itemPfA.subdistLabel}]` : '';
-  text += `PF A (Bejo Jahe Merah New 12s) - ${formatRupiah(pricePfA, true)} | Qty: ${qtyPfA}${pfALabel} | Omset: ${formatRupiah(omsetPfA, true)}\n\n`;
-  const pfBLabel = (qtyPfB > 0 && itemPfB?.subdistLabel) ? ` [${itemPfB.subdistLabel}]` : '';
-  text += `PF B (Promag Herbal 15ml 6s) - ${formatRupiah(pricePfB, true)} | Qty: ${qtyPfB}${pfBLabel} | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
+  text += `2. PENCAPAIAN PRODUK FOKUS\n\n`;
+  text += `PF A (Bejo Jahe Merah New 12s) - ${formatRupiah(pricePfA, true)} | Qty: ${qtyPfA} | Omset: ${formatRupiah(omsetPfA, true)}\n\n`;
+  text += `PF B (Promag Herbal 15ml 6s) - ${formatRupiah(pricePfB, true)} | Qty: ${qtyPfB} | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
 
   text += `3. PENJUALAN NON-FOKUS (NBC)\n\n`;
   text += `Item NBC: ${nbcSummaryStrings.length > 0 ? nbcSummaryStrings.join(', ') : '-'}\n\n`;
@@ -211,65 +182,36 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
 }
 
 /**
- * Generate detailed DOF & SHJ Breakdown Report for WhatsApp
+ * Generate detailed item breakdown report without grosir
  */
 export function generateDofShjReport(params: DailyActivityReportParams): string {
   const formattedDate = formatIndonesianFullDate(params.reportDate);
   const activeItems = params.items.filter(i => i.qty > 0);
 
   let totalQty = 0;
-  let totalGrosir = 0;
-  let totalDofFee = 0;
   let totalRetail = 0;
-  let totalShj = 0;
-
-  let panjunanQty = 0;
-  let panjunanGrosir = 0;
-  let rawingQty = 0;
-  let rawingGrosir = 0;
 
   const itemLines = activeItems.map((i, idx) => {
-    const shjCalc = calculateSHJ(i.product.harga_grosir, i.product.harga_retail, i.product.persentase_dof);
-    const subGrosir = i.product.harga_grosir * i.qty;
-    const subDofFee = shjCalc.dofFee * i.qty;
     const subRetail = i.product.harga_retail * i.qty;
-    const subShj = shjCalc.shj * i.qty;
 
     totalQty += i.qty;
-    totalGrosir += subGrosir;
-    totalDofFee += subDofFee;
     totalRetail += subRetail;
-    totalShj += subShj;
-
-    if (i.subdistLabel?.toLowerCase().includes('raw') || i.subdistLabel?.toLowerCase().includes('siraw')) {
-      rawingQty += i.qty;
-      rawingGrosir += subGrosir;
-    } else {
-      panjunanQty += i.qty;
-      panjunanGrosir += subGrosir;
-    }
 
     const shortName = NBC_PRODUCT_SHORT_NAMES[i.product.kode_produk] || i.product.nama_produk;
-    const dofPct = (i.product.persentase_dof * 100).toFixed(0);
 
-    const originSuffix = i.subdistLabel ? ` [${i.subdistLabel}]` : '';
-
-    return `${idx + 1}. ${shortName} (${i.product.kode_produk})${originSuffix}
+    return `${idx + 1}. ${shortName} (${i.product.kode_produk})
    Qty: ${i.qty} Unit
-   Grosir: ${formatRupiah(i.product.harga_grosir, true)} (Total: ${formatRupiah(subGrosir, true)})
-   DOF (${dofPct}%): ${formatRupiah(shjCalc.dofFee, true)} (Total DoF Fee: ${formatRupiah(subDofFee, true)})
-   Retail+: ${formatRupiah(i.product.harga_retail, true)} (Subtotal: ${formatRupiah(subRetail, true)})
-   SHJ (Retail+ - Grosir): ${formatRupiah(shjCalc.shj, true)} (Total SHJ: ${formatRupiah(subShj, true)})`;
+   Harga: ${formatRupiah(i.product.harga_retail, true)} (Subtotal: ${formatRupiah(subRetail, true)})`;
   });
 
-  let text = `*LAPORAN STRUKTUR HARGA & DOF (DAILY RECON)*\n`;
+  let text = `*RINCIAN ITEM & OMSET PENJUALAN*\n`;
   text += `Tanggal: ${formattedDate}\n`;
   text += `Salesman: *${params.salesmanName || 'RUSDIANA'}*\n`;
   if (params.wilayah) {
     text += `Wilayah: *${params.wilayah.toUpperCase()}*\n`;
   }
   if (params.subdistName) {
-    text += `Subdist: *${params.subdistName.toUpperCase()}*\n`;
+    text += `Pangkalan: *${params.subdistName.toUpperCase()}*\n`;
   }
   text += `User DMS: *${params.userDms || 'MMTW-SKI-CIBADAK'}*\n`;
   text += `-----------------------------------------\n\n`;
@@ -277,17 +219,15 @@ export function generateDofShjReport(params: DailyActivityReportParams): string 
   if (itemLines.length === 0) {
     text += `Belum ada produk dengan Qty terinput.\n\n`;
   } else {
-    text += `RINCIAN ITEM & DOF PER SKU:\n\n`;
+    text += `RINCIAN PENJUALAN PER SKU:\n\n`;
     text += itemLines.join('\n\n') + `\n\n`;
   }
 
   text += `-----------------------------------------\n`;
-  text += `RINGKASAN TOTAL FINANSIAL & DOF:\n`;
+  text += `RINGKASAN TOTAL PENJUALAN:\n`;
   text += `• Total Unit Terjual: ${totalQty} Unit\n`;
-  text += `• Total Nilai Grosir: ${formatRupiah(totalGrosir, true)}\n`;
-  text += `• Total DOF Fee: ${formatRupiah(totalDofFee, true)}\n`;
-  text += `• Total SHJ (Selisih): ${formatRupiah(totalShj, true)}\n`;
-  text += `• TOTAL SETORAN (Retail+): *${formatRupiah(totalRetail, true)}*\n`;
+  text += `• TOTAL SETORAN OMSET: *${formatRupiah(totalRetail, true)}*\n`;
 
   return text;
 }
+

@@ -27,46 +27,55 @@ export const CIANJUR_MOTORIS: MotorisSalesman[] = [
 ];
 
 export const SUKABUMI_MOTORIS: MotorisSalesman[] = [
-  { name: 'RUSDIANA', label: 'Sukabumi (Panjunan)', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-PANJUNAN', areaHint: 'Panjunan' },
   { name: 'RUSDIANA', label: 'Cibadak', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-CIBADAK', areaHint: 'Cibadak' },
-  { name: 'AJENG RIVALDI', label: 'Nyalindung', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-NYALINDUNG', areaHint: 'Nyalindung' },
+  { name: 'HIKMATIAR', label: 'Nyalindung', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-NYALINDUNG', areaHint: 'Nyalindung' },
   { name: 'EGA', label: 'Cikole', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-CIKOLE', areaHint: 'Cikole' },
   { name: 'FACHRI', label: 'Sukaraja', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-SUKARAJA', areaHint: 'Sukaraja' },
 ];
 
 export const SUBDIST_LIST: SubdistInfo[] = [
-  // CIANJUR (2 Subdist)
+  // CIANJUR (4 Pangkalan)
   {
-    key: 'PANJUNAN_CIANJUR',
-    label: 'PANJUNAN CIANJUR',
-    shortLabel: 'Panjunan Cianjur',
+    key: 'CIKALONG',
+    label: 'CIKALONG',
+    shortLabel: 'Cikalong',
     wilayah: 'Cianjur',
-    dmsUser: 'MMTW-CJR-PANJUNAN',
+    dmsUser: 'MMTW-SKI-CIKALONG',
     defaultSalesman: 'HERU',
-    description: 'Subdist Panjunan area Cianjur',
+    description: 'Pangkalan Cikalong Cianjur',
     badgeColor: 'bg-blue-100 text-blue-800 border-blue-300'
   },
   {
-    key: 'SIRAWING',
-    label: 'SIRAWING',
-    shortLabel: 'Sirawing',
+    key: 'CIPANAS',
+    label: 'CIPANAS',
+    shortLabel: 'Cipanas',
     wilayah: 'Cianjur',
-    dmsUser: 'MMTW-CJR-SIRAWING',
-    defaultSalesman: 'HERU',
-    description: 'Subdist Sirawing area Cianjur',
-    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300'
+    dmsUser: 'MMTW-SKI-CIAPANAS',
+    defaultSalesman: 'HERPIN',
+    description: 'Pangkalan Cipanas Cianjur',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300'
   },
-  // SUKABUMI (Pangkalan & Subdist)
   {
-    key: 'PANJUNAN_SUKABUMI',
-    label: 'PANJUNAN SUKABUMI',
-    shortLabel: 'Panjunan Sukabumi',
-    wilayah: 'Sukabumi',
-    dmsUser: 'MMTW-SKI-PANJUNAN',
-    defaultSalesman: 'RUSDIANA',
-    description: 'Subdist Panjunan area Sukabumi',
+    key: 'CIBEBER',
+    label: 'CIBEBER',
+    shortLabel: 'Cibeber',
+    wilayah: 'Cianjur',
+    dmsUser: 'MMTW-SKI-CIBEBER',
+    defaultSalesman: 'RIBCA',
+    description: 'Pangkalan Cibeber Cianjur',
     badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-300'
   },
+  {
+    key: 'CIRANJANG',
+    label: 'CIRANJANG',
+    shortLabel: 'Ciranjang',
+    wilayah: 'Cianjur',
+    dmsUser: 'MMTW-SKI-CIRANJANG',
+    defaultSalesman: 'AHYAR',
+    description: 'Pangkalan Ciranjang Cianjur',
+    badgeColor: 'bg-purple-100 text-purple-800 border-purple-300'
+  },
+  // SUKABUMI (4 Pangkalan)
   {
     key: 'CIBADAK',
     label: 'CIBADAK',
@@ -83,7 +92,7 @@ export const SUBDIST_LIST: SubdistInfo[] = [
     shortLabel: 'Nyalindung',
     wilayah: 'Sukabumi',
     dmsUser: 'MMTW-SKI-NYALINDUNG',
-    defaultSalesman: 'AJENG RIVALDI',
+    defaultSalesman: 'HIKMATIAR',
     description: 'Pangkalan Nyalindung Sukabumi',
     badgeColor: 'bg-indigo-100 text-indigo-800 border-indigo-300'
   },
@@ -109,63 +118,12 @@ export const SUBDIST_LIST: SubdistInfo[] = [
   }
 ];
 
-// Baseline prices for Subdist Cianjur (Panjunan vs Sirawing) and Sukabumi
+// Baseline prices for Subdist
 export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSubdistPrice>> = {
-  PANJUNAN_CIANJUR: {
-    'PEGAB': { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-    'PEMAB': { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-    'PEBJE': { harga_grosir: 12500.00, harga_retail: 15000.00, persentase_dof: 0.20 },
-    'LEXUA': { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-    'LKXKD': { harga_grosir: 9311.80, harga_retail: 12000.00, persentase_dof: 0.20 },
-    'LKXOB': { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-    'LKXLA': { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-    'LKXOD': { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'LKXJA-LKXNA-LKXPA': { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'KMXAD': { harga_grosir: 42000.00, harga_retail: 48000.00, persentase_dof: 0.20 },
-    'KMXKD': { harga_grosir: 18500.00, harga_retail: 22000.00, persentase_dof: 0.20 },
-    'LBJAB': { harga_grosir: 24500.00, harga_retail: 27000.00, persentase_dof: 0.20 },
-    'FTGKAP': { harga_grosir: 18000.00, harga_retail: 21000.00, persentase_dof: 0.20 },
-    'LBMAV': { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-    'ENTROT': { harga_grosir: 15000.00, harga_retail: 17500.00, persentase_dof: 0.20 },
-    'PBSJC': { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 },
-    'FTGSPR': { harga_grosir: 22000.00, harga_retail: 25000.00, persentase_dof: 0.20 },
-    'ENTROH': { harga_grosir: 16500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
-    'LPRGR': { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-    'LMHGA': { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 }
-  },
-  SIRAWING: {
-    'PEGAB': { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 },
-    'PEMAB': { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 },
-    'PEBJE': { harga_grosir: 12600.00, harga_retail: 15000.00, persentase_dof: 0.20 },
-    'LEXUA': { harga_grosir: 5750.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-    'LKXKD': { harga_grosir: 9350.00, harga_retail: 12000.00, persentase_dof: 0.20 },
-    'LKXOB': { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 },
-    'LKXLA': { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 },
-    'LKXOD': { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'LKXJA-LKXNA-LKXPA': { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'KMXAD': { harga_grosir: 42250.00, harga_retail: 48000.00, persentase_dof: 0.20 },
-    'KMXKD': { harga_grosir: 18700.00, harga_retail: 22000.00, persentase_dof: 0.20 },
-    'LBJAB': { harga_grosir: 24750.00, harga_retail: 27000.00, persentase_dof: 0.20 },
-    'FTGKAP': { harga_grosir: 18200.00, harga_retail: 21000.00, persentase_dof: 0.20 },
-    'LBMAV': { harga_grosir: 31200.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-    'ENTROT': { harga_grosir: 15150.00, harga_retail: 17500.00, persentase_dof: 0.20 },
-    'PBSJC': { harga_grosir: 17500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
-    'FTGSPR': { harga_grosir: 22200.00, harga_retail: 25000.00, persentase_dof: 0.20 },
-    'ENTROH': { harga_grosir: 16700.00, harga_retail: 19000.00, persentase_dof: 0.20 },
-    'LPRGR': { harga_grosir: 15900.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-    'LMHGA': { harga_grosir: 16250.00, harga_retail: 16700.00, persentase_dof: 0.00 }
-  },
-  PANJUNAN_SUKABUMI: {
-    'PEGAB': { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-    'LEXUA': { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-    'LKXOB': { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-    'LKXOD': { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'LKXJA-LKXNA-LKXPA': { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-    'LBMAV': { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-    'PBSJC': { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 },
-    'LPRGR': { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-    'LMHGA': { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 }
-  },
+  CIKALONG: {},
+  CIPANAS: {},
+  CIBEBER: {},
+  CIRANJANG: {},
   CIBADAK: {},
   NYALINDUNG: {},
   CIKOLE: {},

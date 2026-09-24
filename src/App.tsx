@@ -100,8 +100,8 @@ export default function App() {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 py-3 px-6 text-center text-xs text-slate-500 mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
-          <div>KALBE • Motoris MMTW Sukabumi</div>
-          <div>Laporan Harian &amp; Struktur Harga Jual (SHJ &amp; DOF)</div>
+          <div>KALBE • Motoris MMTW Sukabumi &amp; Cianjur</div>
+          <div>Sistem Laporan Harian Motoris (Daily Activity Report)</div>
         </div>
       </footer>
 

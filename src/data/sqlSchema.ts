@@ -3,7 +3,7 @@ import { Product, User, DofHeader } from '../types';
 export const INITIAL_USERS: User[] = [
   // Motoris Sukabumi
   { id_user: 'MTR-001', nama_lengkap: 'RUSDIANA', role: 'salesman', dms_user: 'MMTW-SKI-CIBADAK', password: 'password123', telepon: '081234567891' },
-  { id_user: 'MTR-002', nama_lengkap: 'AJENG RIVALDI', role: 'salesman', dms_user: 'MMTW-SKI-NYALINDUNG', password: 'password123', telepon: '081234567892' },
+  { id_user: 'MTR-002', nama_lengkap: 'HIKMATIAR', role: 'salesman', dms_user: 'MMTW-SKI-NYALINDUNG', password: 'password123', telepon: '081234567892' },
   { id_user: 'MTR-003', nama_lengkap: 'EGA', role: 'salesman', dms_user: 'MMTW-SKI-CIKOLE', password: 'password123', telepon: '081234567893' },
   { id_user: 'MTR-004', nama_lengkap: 'FACHRI', role: 'salesman', dms_user: 'MMTW-SKI-SUKARAJA', password: 'password123', telepon: '081234567894' },
   // Motoris Cianjur
@@ -23,12 +23,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 5141.52,
     harga_retail: 6559.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'PEMAB',
@@ -36,11 +31,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 5141.52,
     harga_retail: 6559.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 5141.52, harga_retail: 6559.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 5180.00, harga_retail: 6559.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'PEBJE',
@@ -48,11 +39,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 12500.00,
     harga_retail: 15000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 12500.00, harga_retail: 15000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 12600.00, harga_retail: 15000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LEXUA',
@@ -60,12 +47,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 5700.00,
     harga_retail: 6500.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 5750.00, harga_retail: 6500.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 5700.00, harga_retail: 6500.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LKXKD',
@@ -73,11 +55,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9311.80,
     harga_retail: 12000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LKXOB',
@@ -85,12 +63,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9311.80,
     harga_retail: 12100.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LKXLA',
@@ -98,11 +71,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9311.80,
     harga_retail: 12100.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 9311.80, harga_retail: 12100.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 9350.00, harga_retail: 12100.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LKXOD',
@@ -110,12 +79,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9700.30,
     harga_retail: 13000.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LKXJA-LKXNA-LKXPA',
@@ -123,12 +87,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9700.30,
     harga_retail: 13000.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 9750.00, harga_retail: 13000.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 9700.30, harga_retail: 13000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'KMXAD',
@@ -136,11 +95,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 42000.00,
     harga_retail: 48000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 42000.00, harga_retail: 48000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 42250.00, harga_retail: 48000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'KMXKD',
@@ -148,11 +103,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 18500.00,
     harga_retail: 22000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 18500.00, harga_retail: 22000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 18700.00, harga_retail: 22000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LBJAB',
@@ -160,11 +111,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 24500.00,
     harga_retail: 27000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 24500.00, harga_retail: 27000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 24750.00, harga_retail: 27000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'FTGKAP',
@@ -172,11 +119,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 18000.00,
     harga_retail: 21000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 18000.00, harga_retail: 21000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 18200.00, harga_retail: 21000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LBMAV',
@@ -184,12 +127,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 31084.00,
     harga_retail: 33000.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 31200.00, harga_retail: 33000.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 31084.00, harga_retail: 33000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'ENTROT',
@@ -197,11 +135,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 15000.00,
     harga_retail: 17500.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 15000.00, harga_retail: 17500.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 15150.00, harga_retail: 17500.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'PBSJC',
@@ -209,12 +143,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 17460.30,
     harga_retail: 19000.00,
     persentase_dof: 0.20,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 17500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 17460.30, harga_retail: 19000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'FTGSPR',
@@ -222,11 +151,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 22000.00,
     harga_retail: 25000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 22000.00, harga_retail: 25000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 22200.00, harga_retail: 25000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'ENTROH',
@@ -234,11 +159,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 16500.00,
     harga_retail: 19000.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 16500.00, harga_retail: 19000.00, persentase_dof: 0.20 },
-      SIRAWING: { harga_grosir: 16700.00, harga_retail: 19000.00, persentase_dof: 0.20 }
-    }
+    wilayah: ['Cianjur']
   },
   {
     kode_produk: 'LPRGR',
@@ -246,12 +167,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 15810.00,
     harga_retail: 16800.00,
     persentase_dof: 0.00,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-      SIRAWING: { harga_grosir: 15900.00, harga_retail: 16800.00, persentase_dof: 0.00 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 15810.00, harga_retail: 16800.00, persentase_dof: 0.00 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LMHGA',
@@ -259,12 +175,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 16188.00,
     harga_retail: 16700.00,
     persentase_dof: 0.00,
-    wilayah: ['Sukabumi', 'Cianjur'],
-    subdist_prices: {
-      PANJUNAN_CIANJUR: { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 },
-      SIRAWING: { harga_grosir: 16250.00, harga_retail: 16700.00, persentase_dof: 0.00 },
-      PANJUNAN_SUKABUMI: { harga_grosir: 16188.00, harga_retail: 16700.00, persentase_dof: 0.00 }
-    }
+    wilayah: ['Sukabumi', 'Cianjur']
   }
 ];
 
