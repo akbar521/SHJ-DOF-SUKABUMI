@@ -96,30 +96,23 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
   };
 
   // 2. Kinerja Kunjungan
-  const [realCall, setRealCall] = useState<number>(30);
-  const [ec, setEc] = useState<number>(8);
-  const [noo, setNoo] = useState<number>(8);
+  const [realCall, setRealCall] = useState<number>(0);
+  const [ec, setEc] = useState<number>(0);
+  const [noo, setNoo] = useState<number>(0);
 
   // 3. Evaluasi (Not EC Breakdown)
-  const [stockCukup, setStockCukup] = useState<number>(2);
-  const [pemilikTidakAda, setPemilikTidakAda] = useState<number>(6);
-  const [belumPernahJual, setBelumPernahJual] = useState<number>(3);
-  const [pernahJualSM, setPernahJualSM] = useState<number>(1);
-  const [alasanLain, setAlasanLain] = useState<number>(10);
-  const [totalBranding, setTotalBranding] = useState<number>(2);
+  const [stockCukup, setStockCukup] = useState<number>(0);
+  const [pemilikTidakAda, setPemilikTidakAda] = useState<number>(0);
+  const [belumPernahJual, setBelumPernahJual] = useState<number>(0);
+  const [pernahJualSM, setPernahJualSM] = useState<number>(0);
+  const [alasanLain, setAlasanLain] = useState<number>(0);
+  const [totalBranding, setTotalBranding] = useState<number>(0);
 
   // 4. Quantities state mapping: { [kode_produk]: qty }
   const [quantities, setQuantities] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     products.forEach(p => {
-      if (p.kode_produk === 'PEGAB') initial[p.kode_produk] = 21; // Go Anggur
-      else if (p.kode_produk === 'LEXUA') initial[p.kode_produk] = 10; // Ultimate
-      else if (p.kode_produk === 'LKXOD') initial[p.kode_produk] = 2; // Komix Ori
-      else if (p.kode_produk === 'LKXJA-LKXNA-LKXPA') initial[p.kode_produk] = 2; // Komix Rasa
-      else if (p.kode_produk === 'PBSJC') initial[p.kode_produk] = 3; // Slasi
-      else if (p.kode_produk === 'LBMAV') initial[p.kode_produk] = 1; // PF A: Bejo Jahe Merah
-      else if (p.kode_produk === 'LPRGR') initial[p.kode_produk] = 1; // PF B: Promag Herbal
-      else initial[p.kode_produk] = 0;
+      initial[p.kode_produk] = 0;
     });
     return initial;
   });
@@ -151,7 +144,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       resetObj[p.kode_produk] = 0;
     });
     setQuantities(resetObj);
-    setRealCall(30);
+    setRealCall(0);
     setEc(0);
     setNoo(0);
     setStockCukup(0);
