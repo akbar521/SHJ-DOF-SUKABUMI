@@ -3,7 +3,7 @@ import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_USERS } from '../data/sqlSche
 import { calculateDofFee } from '../utils/mathUtils';
 
 // Local storage fallback key for resilience
-const LOCAL_STORAGE_PRODUCTS = 'dof_shj_products_v1';
+const LOCAL_STORAGE_PRODUCTS = 'dof_shj_products_v2';
 const LOCAL_STORAGE_ORDERS = 'dof_shj_orders_v1';
 
 export const api = {

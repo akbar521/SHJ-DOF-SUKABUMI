@@ -30,7 +30,7 @@ export const SUKABUMI_MOTORIS: MotorisSalesman[] = [
   { name: 'RUSDIANA', label: 'Cibadak', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-CIBADAK', areaHint: 'Cibadak' },
   { name: 'HIKMATIAR', label: 'Nyalindung', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-NYALINDUNG', areaHint: 'Nyalindung' },
   { name: 'EGA', label: 'Cikole', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-CIKOLE', areaHint: 'Cikole' },
-  { name: 'FACHRI', label: 'Sukaraja', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-SUKARAJA', areaHint: 'Sukaraja' },
+  { name: 'DERI', label: 'Sukaraja', wilayah: 'Sukabumi', dmsCode: 'MMTW-SKI-SUKARAJA', areaHint: 'Sukaraja' },
 ];
 
 export const SUBDIST_LIST: SubdistInfo[] = [
@@ -112,7 +112,7 @@ export const SUBDIST_LIST: SubdistInfo[] = [
     shortLabel: 'Sukaraja',
     wilayah: 'Sukabumi',
     dmsUser: 'MMTW-SKI-SUKARAJA',
-    defaultSalesman: 'FACHRI',
+    defaultSalesman: 'DERI',
     description: 'Pangkalan Sukaraja Sukabumi',
     badgeColor: 'bg-rose-100 text-rose-800 border-rose-300'
   }
@@ -120,10 +120,30 @@ export const SUBDIST_LIST: SubdistInfo[] = [
 
 // Baseline prices for Subdist
 export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSubdistPrice>> = {
-  CIKALONG: {},
-  CIPANAS: {},
-  CIBEBER: {},
-  CIRANJANG: {},
+  CIKALONG: {
+    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
+    FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+  },
+  CIPANAS: {
+    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
+    FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+  },
+  CIBEBER: {
+    ENTROT: { harga_grosir: 15000, harga_retail: 17800 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+  },
+  CIRANJANG: {
+    ENTROT: { harga_grosir: 15000, harga_retail: 17800 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+  },
   CIBADAK: {},
   NYALINDUNG: {},
   CIKOLE: {},

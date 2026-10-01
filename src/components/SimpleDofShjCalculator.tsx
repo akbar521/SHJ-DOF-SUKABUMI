@@ -3,7 +3,8 @@ import { Product, SubdistKey, Wilayah } from '../types';
 import { 
   SUBDIST_LIST, 
   CIANJUR_MOTORIS, 
-  SUKABUMI_MOTORIS 
+  SUKABUMI_MOTORIS,
+  resolveSubdistPrice
 } from '../data/subdistConfig';
 import { formatRupiah } from '../utils/mathUtils';
 import { generatePdfReport } from '../utils/pdfGenerator';
@@ -69,7 +70,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     }
   };
 
-  // Select Sukabumi Salesman (RUSDIANA -> Cibadak, HIKMATIAR -> Nyalindung, EGA -> Cikole, FACHRI -> Sukaraja)
+  // Select Sukabumi Salesman (RUSDIANA -> Cibadak, HIKMATIAR -> Nyalindung, EGA -> Cikole, DERI -> Sukaraja)
   const handleSelectSukabumiSalesman = (motoris: typeof SUKABUMI_MOTORIS[0]) => {
     setSalesmanName(motoris.name);
     if (motoris.dmsCode) {
@@ -202,18 +203,27 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     });
   }, [products, selectedWilayah]);
 
-  // Calculated items with PF / NBC flags
+  // Calculated items with PF / NBC flags & Subdist/Salesman-aware pricing
   const calculatedItems = useMemo(() => {
     return filteredProducts.map(p => {
+      const priceInfo = resolveSubdistPrice(p, selectedSubdist);
+      const effectiveRetailPrice = priceInfo.harga_retail;
       const qty = quantities[p.kode_produk] || 0;
-      const subRetail = p.harga_retail * qty;
+      const subRetail = effectiveRetailPrice * qty;
       const isPfA = p.kode_produk === 'LBMAV';
       const isPfB = p.kode_produk === 'LPRGR';
       const isPf = isPfA || isPfB;
 
+      const effectiveProduct: Product = {
+        ...p,
+        harga_retail: effectiveRetailPrice,
+        harga_grosir: priceInfo.harga_grosir
+      };
+
       return {
         product: p,
-        effectiveProduct: p,
+        effectiveProduct,
+        effectivePrice: effectiveRetailPrice,
         qty,
         subRetail,
         isPfA,
@@ -222,7 +232,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         shortName: NBC_PRODUCT_SHORT_NAMES[p.kode_produk] || p.nama_produk
       };
     });
-  }, [filteredProducts, quantities]);
+  }, [filteredProducts, quantities, selectedSubdist]);
 
   // Total summary
   const summary = useMemo(() => {
@@ -370,7 +380,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       ec,
       noo,
       items: calculatedItems.map(item => ({
-        product: item.product,
+        product: item.effectiveProduct,
         qty: item.qty
       })),
       stockCukup,
@@ -410,7 +420,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       ec,
       noo,
       items: calculatedItems.map(item => ({
-        product: item.product,
+        product: item.effectiveProduct,
         qty: item.qty
       }))
     });
@@ -460,7 +470,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         subdistName: dynamicSubdistReportLabel,
         notes: `Real Call: ${realCall} | EC: ${ec} | NOO: ${noo} | Setoran Omset: ${formatRupiah(summary.totalSetoran, true)}`,
         items: calculatedItems.map(item => ({
-          product: item.product,
+          product: item.effectiveProduct,
           qty: item.qty
         }))
       });
@@ -1030,7 +1040,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
 
                     {/* Harga Retail */}
                     <td className="p-3 text-right font-mono font-bold text-blue-600">
-                      {formatRupiah(p.harga_retail, true)}
+                      {formatRupiah(item.effectiveProduct.harga_retail, true)}
                     </td>
 
                     {/* Omset Subtotal */}
