@@ -210,8 +210,8 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       const effectiveRetailPrice = priceInfo.harga_retail;
       const qty = quantities[p.kode_produk] || 0;
       const subRetail = effectiveRetailPrice * qty;
-      const isPfA = p.kode_produk === 'LBMAV';
-      const isPfB = p.kode_produk === 'LPRGR';
+      const isPfA = p.kode_produk === 'LBMAV' || p.nama_produk.toLowerCase().includes('bejo');
+      const isPfB = p.kode_produk.startsWith('LKX') || p.nama_produk.toLowerCase().includes('komix');
       const isPf = isPfA || isPfB;
 
       const effectiveProduct: Product = {
@@ -879,7 +879,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </p>
         </div>
 
-        {/* Produk Fokus (PF A & PF B) */}
+        {/* Produk Fokus (PF A: Bejo & PF B: Komix) */}
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
           <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 flex items-center space-x-1">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -889,7 +889,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             {formatRupiah(summary.omsetPfA + summary.omsetPfB, true)}
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
-            PF A: {summary.qtyPfA} unit ({formatRupiah(summary.omsetPfA, true)}) | PF B: {summary.qtyPfB} unit ({formatRupiah(summary.omsetPfB, true)})
+            PF A (Bejo): {summary.qtyPfA} unit ({formatRupiah(summary.omsetPfA, true)}) | PF B (Komix): {summary.qtyPfB} unit ({formatRupiah(summary.omsetPfB, true)})
           </p>
         </div>
 
@@ -926,9 +926,12 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             </p>
           </div>
 
-          <div className="flex items-center space-x-1.5 text-xs">
+          <div className="flex items-center space-x-1.5 text-xs flex-wrap gap-y-1">
             <span className="bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded border border-amber-300 text-[10px]">
-              PF = Fokus
+              PF A = Bejo
+            </span>
+            <span className="bg-orange-100 text-orange-900 font-bold px-2 py-0.5 rounded border border-orange-300 text-[10px]">
+              PF B = All Komix Family
             </span>
             <span className="bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded text-[10px]">
               NBC
@@ -967,15 +970,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                     {/* Category badge */}
                     <td className="p-3">
                       {item.isPfA ? (
-                        <span className="bg-amber-100 text-amber-900 font-extrabold text-[10px] px-2 py-0.5 rounded-full border border-amber-300">
+                        <span className="bg-amber-100 text-amber-900 font-extrabold text-[10px] px-2 py-0.5 rounded-full border border-amber-300 whitespace-nowrap">
                           PF A
                         </span>
                       ) : item.isPfB ? (
-                        <span className="bg-amber-100 text-amber-900 font-extrabold text-[10px] px-2 py-0.5 rounded-full border border-amber-300">
+                        <span className="bg-orange-100 text-orange-900 font-extrabold text-[10px] px-2 py-0.5 rounded-full border border-orange-300 whitespace-nowrap">
                           PF B
                         </span>
                       ) : (
-                        <span className="bg-slate-100 text-slate-600 font-semibold text-[10px] px-2 py-0.5 rounded-full">
+                        <span className="bg-slate-100 text-slate-600 font-semibold text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap">
                           NBC
                         </span>
                       )}
@@ -983,7 +986,18 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
 
                     {/* Product Name */}
                     <td className="p-3">
-                      <div className="font-bold text-slate-900">{p.nama_produk}</div>
+                      <div className="font-bold text-slate-900 flex items-center flex-wrap gap-1.5">
+                        <span>{p.nama_produk}</span>
+                        {p.kode_produk === 'FTGSPR' && (
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-blue-50 text-blue-800 border border-blue-200">
+                            {selectedSubdist === 'CIKALONG' || selectedSubdist === 'CIPANAS' 
+                              ? '1 Strip (Rp 10.950)' 
+                              : selectedSubdist === 'CIBEBER' || selectedSubdist === 'CIRANJANG'
+                              ? '1 Box / 10 Strip (Rp 109.500)'
+                              : 'Rp 109.500'}
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[10px] text-slate-400 font-mono flex items-center space-x-2">
                         <span>SKU: {p.kode_produk}</span>
                         <span>•</span>

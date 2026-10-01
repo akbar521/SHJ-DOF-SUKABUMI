@@ -124,13 +124,13 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
     ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
-    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 10950 },
   },
   CIPANAS: {
     ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
-    FTGSPR: { harga_grosir: 22000, harga_retail: 109500 },
+    FTGSPR: { harga_grosir: 22000, harga_retail: 10950 },
   },
   CIBEBER: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17800 },

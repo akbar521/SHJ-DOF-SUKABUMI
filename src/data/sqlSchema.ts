@@ -55,7 +55,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 9311.80,
     harga_retail: 12100.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur']
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LKXOD',
@@ -117,7 +117,13 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 22000.00,
     harga_retail: 109500.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur']
+    wilayah: ['Cianjur'],
+    subdist_prices: {
+      CIKALONG: { harga_grosir: 22000.00, harga_retail: 10950.00 },
+      CIPANAS: { harga_grosir: 22000.00, harga_retail: 10950.00 },
+      CIBEBER: { harga_grosir: 22000.00, harga_retail: 109500.00 },
+      CIRANJANG: { harga_grosir: 22000.00, harga_retail: 109500.00 }
+    }
   },
   {
     kode_produk: 'ENTROH',
