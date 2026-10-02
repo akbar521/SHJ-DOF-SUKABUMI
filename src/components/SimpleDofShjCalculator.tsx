@@ -211,7 +211,11 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
       const qty = quantities[p.kode_produk] || 0;
       const subRetail = effectiveRetailPrice * qty;
       const isPfA = p.kode_produk === 'LBMAV' || p.nama_produk.toLowerCase().includes('bejo');
-      const isPfB = p.kode_produk.startsWith('LKX') || p.nama_produk.toLowerCase().includes('komix');
+      const isPfB = 
+        p.kode_produk === 'LPRGR' || 
+        p.kode_produk.startsWith('LKX') || 
+        p.nama_produk.toLowerCase().includes('komix') || 
+        p.nama_produk.toLowerCase().includes('promag');
       const isPf = isPfA || isPfB;
 
       const effectiveProduct: Product = {
@@ -879,7 +883,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </p>
         </div>
 
-        {/* Produk Fokus (PF A: Bejo & PF B: Komix) */}
+        {/* Produk Fokus (PF A: Bejo & PF B: Komix & Promag) */}
         <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs">
           <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 flex items-center space-x-1">
             <Sparkles className="w-3.5 h-3.5 text-amber-600" />
@@ -889,7 +893,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
             {formatRupiah(summary.omsetPfA + summary.omsetPfB, true)}
           </div>
           <p className="text-[11px] text-slate-500 mt-1">
-            PF A (Bejo): {summary.qtyPfA} unit ({formatRupiah(summary.omsetPfA, true)}) | PF B (Komix): {summary.qtyPfB} unit ({formatRupiah(summary.omsetPfB, true)})
+            PF A (Bejo): {summary.qtyPfA} unit ({formatRupiah(summary.omsetPfA, true)}) | PF B (Komix & Promag): {summary.qtyPfB} unit ({formatRupiah(summary.omsetPfB, true)})
           </p>
         </div>
 
@@ -931,7 +935,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
               PF A = Bejo
             </span>
             <span className="bg-orange-100 text-orange-900 font-bold px-2 py-0.5 rounded border border-orange-300 text-[10px]">
-              PF B = All Komix Family
+              PF B = Komix Family & Promag Herbal
             </span>
             <span className="bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded text-[10px]">
               NBC

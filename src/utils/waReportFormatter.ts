@@ -93,7 +93,7 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
 
   // Find Focus Products
   // PF A: Bejo Jahe Merah New (12 scht) [LBMAV] - Rp 33.000
-  // PF B: All Komix Family (tube, ori, rasa)
+  // PF B: All Komix Family & Promag Herbal
   const itemPfA = params.items.find(
     i => i.product.kode_produk === 'LBMAV' || i.product.nama_produk.toLowerCase().includes('bejo')
   );
@@ -101,25 +101,28 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
   const pricePfA = itemPfA?.product.harga_retail || 33000;
   const omsetPfA = qtyPfA * pricePfA;
 
-  // PF B: All Komix Family
-  const isKomixProduct = (code: string, name: string) =>
-    code.startsWith('LKX') || name.toLowerCase().includes('komix');
+  // PF B: All Komix Family & Promag Herbal
+  const isPfBProduct = (code: string, name: string) =>
+    code === 'LPRGR' ||
+    code.startsWith('LKX') ||
+    name.toLowerCase().includes('komix') ||
+    name.toLowerCase().includes('promag');
 
-  const komixItems = params.items.filter(i =>
-    isKomixProduct(i.product.kode_produk, i.product.nama_produk)
+  const pfBItems = params.items.filter(i =>
+    isPfBProduct(i.product.kode_produk, i.product.nama_produk)
   );
-  const qtyPfB = komixItems.reduce((acc, i) => acc + i.qty, 0);
-  const omsetPfB = komixItems.reduce((acc, i) => acc + (i.product.harga_retail * i.qty), 0);
+  const qtyPfB = pfBItems.reduce((acc, i) => acc + i.qty, 0);
+  const omsetPfB = pfBItems.reduce((acc, i) => acc + (i.product.harga_retail * i.qty), 0);
 
-  const activeKomixItems = komixItems.filter(i => i.qty > 0);
-  const komixBreakdown = activeKomixItems.map(i => {
+  const activePfBItems = pfBItems.filter(i => i.qty > 0);
+  const pfBBreakdown = activePfBItems.map(i => {
     const shortName = NBC_PRODUCT_SHORT_NAMES[i.product.kode_produk] || i.product.nama_produk;
     return `${shortName} (${i.qty})`;
   });
 
-  // Non-Focus Items (NBC) - Exclude Bejo & Komix Family
+  // Non-Focus Items (NBC) - Exclude Bejo, Komix Family & Promag Herbal
   const isFocusProduct = (code: string, name: string) =>
-    code === 'LBMAV' || name.toLowerCase().includes('bejo') || isKomixProduct(code, name);
+    code === 'LBMAV' || name.toLowerCase().includes('bejo') || isPfBProduct(code, name);
 
   const nbcItems = params.items.filter(
     i => !isFocusProduct(i.product.kode_produk, i.product.nama_produk)
@@ -170,10 +173,10 @@ export function generateDailyActivityReport(params: DailyActivityReportParams): 
 
   text += `2. PENCAPAIAN PRODUK FOKUS\n\n`;
   text += `PF A (Bejo Jahe Merah New 12s) - ${formatRupiah(pricePfA, true)} | Qty: ${qtyPfA} | Omset: ${formatRupiah(omsetPfA, true)}\n\n`;
-  if (komixBreakdown.length > 0) {
-    text += `PF B (All Komix Family) - Qty: ${qtyPfB} [${komixBreakdown.join(', ')}] | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
+  if (pfBBreakdown.length > 0) {
+    text += `PF B (Komix Family & Promag Herbal) - Qty: ${qtyPfB} [${pfBBreakdown.join(', ')}] | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
   } else {
-    text += `PF B (All Komix Family - Tube, Ori, Rasa) | Qty: ${qtyPfB} | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
+    text += `PF B (Komix Family & Promag Herbal) | Qty: ${qtyPfB} | Omset: ${formatRupiah(omsetPfB, true)}\n\n`;
   }
 
   text += `3. PENJUALAN NON-FOKUS (NBC)\n\n`;
