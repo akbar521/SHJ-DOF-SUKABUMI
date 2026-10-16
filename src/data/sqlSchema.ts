@@ -5,7 +5,7 @@ export const INITIAL_USERS: User[] = [
   { id_user: 'MTR-001', nama_lengkap: 'RUSDIANA', role: 'salesman', dms_user: 'MMTW-SKI-CIBADAK', password: 'password123', telepon: '081234567891' },
   { id_user: 'MTR-002', nama_lengkap: 'HIKMATIAR', role: 'salesman', dms_user: 'MMTW-SKI-NYALINDUNG', password: 'password123', telepon: '081234567892' },
   { id_user: 'MTR-003', nama_lengkap: 'EGA', role: 'salesman', dms_user: 'MMTW-SKI-CIKOLE', password: 'password123', telepon: '081234567893' },
-  { id_user: 'MTR-004', nama_lengkap: 'DERI', role: 'salesman', dms_user: 'MMTW-SKI-SUKARAJA', password: 'password123', telepon: '081234567894' },
+  { id_user: 'MTR-004', nama_lengkap: 'DIAN', role: 'salesman', dms_user: 'MMTW-SKI-SUKARAJA', password: 'password123', telepon: '081234567894' },
   // Motoris Cianjur
   { id_user: 'MTR-CJR-001', nama_lengkap: 'HERU', role: 'salesman', dms_user: 'MMTW-SKI-CIKALONG', password: 'password123', telepon: '081234567801' },
   { id_user: 'MTR-CJR-002', nama_lengkap: 'HERPIN', role: 'salesman', dms_user: 'MMTW-SKI-CIAPANAS', password: 'password123', telepon: '081234567802' },
@@ -154,6 +154,14 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_retail: 16700.00,
     persentase_dof: 0.00,
     wilayah: ['Sukabumi', 'Cianjur']
+  },
+  {
+    kode_produk: 'KLPSL',
+    nama_produk: 'Kalpanax Salep',
+    harga_grosir: 9000.00,
+    harga_retail: 10800.00,
+    persentase_dof: 0.20,
+    wilayah: ['Cianjur']
   }
 ];
 
@@ -313,5 +321,6 @@ INSERT INTO produk (kode_produk, nama_produk, harga_grosir, harga_retail, persen
 ('LBMAV', 'Bejo Jahe Merah New (12 scht)', 31084.00, 33000.00, 0.20),
 ('PBSJC', 'B7 SLASI Jeruk Nipis Renceng (12''s)', 17460.30, 19000.00, 0.20),
 ('LPRGR', 'Promag Herbal 15 ml (6 ''S)', 15810.00, 16800.00, 0.00),
-('LMHGA', 'Mixagrip Herbal Greges (6''S)', 16188.00, 16700.00, 0.00);
+('LMHGA', 'Mixagrip Herbal Greges (6''S)', 16188.00, 16700.00, 0.00),
+('KLPSL', 'Kalpanax Salep', 9000.00, 10800.00, 0.20);
 `;

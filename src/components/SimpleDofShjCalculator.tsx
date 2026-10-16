@@ -70,7 +70,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     }
   };
 
-  // Select Sukabumi Salesman (RUSDIANA -> Cibadak, HIKMATIAR -> Nyalindung, EGA -> Cikole, DERI -> Sukaraja)
+  // Select Sukabumi Salesman (RUSDIANA -> Cibadak, HIKMATIAR -> Nyalindung, EGA -> Cikole, DIAN -> Sukaraja)
   const handleSelectSukabumiSalesman = (motoris: typeof SUKABUMI_MOTORIS[0]) => {
     setSalesmanName(motoris.name);
     if (motoris.dmsCode) {

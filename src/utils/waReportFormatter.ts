@@ -81,7 +81,8 @@ export const NBC_PRODUCT_SHORT_NAMES: Record<string, string> = {
   'FTGSPR': 'Fatigon Spirit',
   'ENTROH': 'Entrostop Herbal Anak',
   'LPRGR': 'Promag Herbal',
-  'LMHGA': 'Mixagrip Herbal'
+  'LMHGA': 'Mixagrip Herbal',
+  'KLPSL': 'Kalpanax Salep'
 };
 
 /**
