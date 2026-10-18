@@ -3,6 +3,7 @@ import { Product } from './types';
 import { api } from './services/apiService';
 import { Navbar, ActiveTab } from './components/Navbar';
 import { SimpleDofShjCalculator } from './components/SimpleDofShjCalculator';
+import { EvaluationSimulator } from './components/EvaluationSimulator';
 import { ProductMasterData } from './components/ProductMasterData';
 import { FlutterCodeViewer } from './components/FlutterCodeViewer';
 import { SqlSchemaViewer } from './components/SqlSchemaViewer';
@@ -74,6 +75,10 @@ export default function App() {
           <div>
             {activeTab === 'calculator' && (
               <SimpleDofShjCalculator products={products} />
+            )}
+
+            {activeTab === 'eval_simulator' && (
+              <EvaluationSimulator products={products} />
             )}
 
             {activeTab === 'master_data' && (

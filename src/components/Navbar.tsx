@@ -7,11 +7,12 @@ import {
   Code2, 
   Database, 
   UserCheck, 
-  Boxes
+  Boxes,
+  Award
 } from 'lucide-react';
 import { PWAInstallButton } from './PWAInstallButton';
 
-export type ActiveTab = 'calculator' | 'master_data' | 'flutter_dart' | 'sql_api';
+export type ActiveTab = 'calculator' | 'eval_simulator' | 'master_data' | 'flutter_dart' | 'sql_api';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -65,6 +66,21 @@ export function Navbar({
             <span>Kalkulator Penjualan</span>
             <span className="bg-emerald-500/20 text-emerald-300 text-[9px] px-1.5 py-0.2 rounded font-bold border border-emerald-500/30">
               Utama
+            </span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('eval_simulator')}
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-t-lg text-xs font-bold transition whitespace-nowrap border-b-2 ${
+              activeTab === 'eval_simulator'
+                ? 'bg-slate-800/90 text-amber-400 border-amber-500 shadow-xs'
+                : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border-transparent'
+            }`}
+          >
+            <Award className="w-4 h-4 text-amber-400" />
+            <span>Simulasi Evaluasi</span>
+            <span className="bg-amber-500/20 text-amber-300 text-[9px] px-1.5 py-0.2 rounded font-bold border border-amber-500/30">
+              KPI 4 Pilar
             </span>
           </button>
 

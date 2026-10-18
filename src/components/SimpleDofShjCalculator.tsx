@@ -193,6 +193,22 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
     setTotalBranding(2);
   };
 
+  // Auto-sync current draft to localStorage for Evaluation Simulator
+  useEffect(() => {
+    try {
+      localStorage.setItem('dof_shj_calculator_draft', JSON.stringify({
+        quantities,
+        selectedWilayah,
+        salesmanName,
+        realCall,
+        ec,
+        noo
+      }));
+    } catch {
+      // ignore localStorage quota error
+    }
+  }, [quantities, selectedWilayah, salesmanName, realCall, ec, noo]);
+
   // Filter products by selected Wilayah
   const filteredProducts = useMemo(() => {
     return products.filter(p => {
@@ -777,9 +793,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </div>
           <div className="mt-1 flex items-baseline space-x-2">
             <input
-              type="number"
-              value={realCall}
-              onChange={(e) => setRealCall(parseInt(e.target.value) || 0)}
+              type="text"
+              inputMode="numeric"
+              value={realCall === 0 ? '' : realCall}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, '');
+                setRealCall(raw === '' ? 0 : parseInt(raw, 10));
+              }}
+              onFocus={(e) => e.currentTarget.select()}
+              placeholder="0"
               className="w-20 font-mono font-bold text-xl text-slate-900 bg-transparent focus:outline-none"
             />
             <span className="text-xs text-slate-400">Toko</span>
@@ -810,9 +832,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </div>
           <div className="mt-1 flex items-baseline space-x-2">
             <input
-              type="number"
-              value={ec}
-              onChange={(e) => setEc(parseInt(e.target.value) || 0)}
+              type="text"
+              inputMode="numeric"
+              value={ec === 0 ? '' : ec}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, '');
+                setEc(raw === '' ? 0 : parseInt(raw, 10));
+              }}
+              onFocus={(e) => e.currentTarget.select()}
+              placeholder="0"
               className="w-20 font-mono font-bold text-xl text-emerald-700 bg-transparent focus:outline-none"
             />
             <span className="text-xs text-emerald-600">Toko Order</span>
@@ -843,9 +871,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
           </div>
           <div className="mt-1 flex items-baseline space-x-2">
             <input
-              type="number"
-              value={noo}
-              onChange={(e) => setNoo(parseInt(e.target.value) || 0)}
+              type="text"
+              inputMode="numeric"
+              value={noo === 0 ? '' : noo}
+              onChange={(e) => {
+                const raw = e.target.value.replace(/[^0-9]/g, '');
+                setNoo(raw === '' ? 0 : parseInt(raw, 10));
+              }}
+              onFocus={(e) => e.currentTarget.select()}
+              placeholder="0"
               className="w-20 font-mono font-bold text-xl text-blue-700 bg-transparent focus:outline-none"
             />
             <span className="text-xs text-blue-600">Toko Baru</span>
@@ -1021,10 +1055,14 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                         </button>
                         
                         <input
-                          type="number"
-                          min="0"
+                          type="text"
+                          inputMode="numeric"
                           value={item.qty === 0 ? '' : item.qty}
-                          onChange={(e) => handleQtyChange(p.kode_produk, parseInt(e.target.value) || 0)}
+                          onChange={(e) => {
+                            const raw = e.target.value.replace(/[^0-9]/g, '');
+                            handleQtyChange(p.kode_produk, raw === '' ? 0 : parseInt(raw, 10));
+                          }}
+                          onFocus={(e) => e.currentTarget.select()}
                           placeholder="0"
                           className={`w-14 text-center font-mono font-bold text-sm py-1 rounded-lg border focus:outline-none focus:ring-2 focus:ring-emerald-500 transition ${
                             isSelected 
@@ -1150,11 +1188,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 -
               </button>
               <input
-                type="number"
-                min={0}
-                max={stockCukup + remainingNotEc}
-                value={stockCukup}
-                onChange={(e) => handleUpdateReason('stockCukup', parseInt(e.target.value) || 0, false)}
+                type="text"
+                inputMode="numeric"
+                value={stockCukup === 0 ? '' : stockCukup}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  handleUpdateReason('stockCukup', raw === '' ? 0 : parseInt(raw, 10), false);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                placeholder="0"
                 className="w-12 text-center font-mono font-bold text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500 rounded"
               />
               <button
@@ -1183,11 +1225,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 -
               </button>
               <input
-                type="number"
-                min={0}
-                max={pemilikTidakAda + remainingNotEc}
-                value={pemilikTidakAda}
-                onChange={(e) => handleUpdateReason('pemilikTidakAda', parseInt(e.target.value) || 0, false)}
+                type="text"
+                inputMode="numeric"
+                value={pemilikTidakAda === 0 ? '' : pemilikTidakAda}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  handleUpdateReason('pemilikTidakAda', raw === '' ? 0 : parseInt(raw, 10), false);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                placeholder="0"
                 className="w-12 text-center font-mono font-bold text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500 rounded"
               />
               <button
@@ -1216,11 +1262,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 -
               </button>
               <input
-                type="number"
-                min={0}
-                max={belumPernahJual + remainingNotEc}
-                value={belumPernahJual}
-                onChange={(e) => handleUpdateReason('belumPernahJual', parseInt(e.target.value) || 0, false)}
+                type="text"
+                inputMode="numeric"
+                value={belumPernahJual === 0 ? '' : belumPernahJual}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  handleUpdateReason('belumPernahJual', raw === '' ? 0 : parseInt(raw, 10), false);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                placeholder="0"
                 className="w-12 text-center font-mono font-bold text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500 rounded"
               />
               <button
@@ -1249,11 +1299,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 -
               </button>
               <input
-                type="number"
-                min={0}
-                max={pernahJualSM + remainingNotEc}
-                value={pernahJualSM}
-                onChange={(e) => handleUpdateReason('pernahJualSM', parseInt(e.target.value) || 0, false)}
+                type="text"
+                inputMode="numeric"
+                value={pernahJualSM === 0 ? '' : pernahJualSM}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  handleUpdateReason('pernahJualSM', raw === '' ? 0 : parseInt(raw, 10), false);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                placeholder="0"
                 className="w-12 text-center font-mono font-bold text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500 rounded"
               />
               <button
@@ -1282,11 +1336,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 -
               </button>
               <input
-                type="number"
-                min={0}
-                max={alasanLain + remainingNotEc}
-                value={alasanLain}
-                onChange={(e) => handleUpdateReason('alasanLain', parseInt(e.target.value) || 0, false)}
+                type="text"
+                inputMode="numeric"
+                value={alasanLain === 0 ? '' : alasanLain}
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^0-9]/g, '');
+                  handleUpdateReason('alasanLain', raw === '' ? 0 : parseInt(raw, 10), false);
+                }}
+                onFocus={(e) => e.currentTarget.select()}
+                placeholder="0"
                 className="w-12 text-center font-mono font-bold text-sm bg-transparent focus:outline-none focus:ring-1 focus:ring-emerald-500 rounded"
               />
               <button
@@ -1321,10 +1379,15 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
               </button>
               <div className="flex items-center space-x-1 font-mono font-bold text-emerald-900">
                 <input
-                  type="number"
-                  min={0}
-                  value={totalBranding}
-                  onChange={(e) => setTotalBranding(Math.max(0, parseInt(e.target.value) || 0))}
+                  type="text"
+                  inputMode="numeric"
+                  value={totalBranding === 0 ? '' : totalBranding}
+                  onChange={(e) => {
+                    const raw = e.target.value.replace(/[^0-9]/g, '');
+                    setTotalBranding(raw === '' ? 0 : parseInt(raw, 10));
+                  }}
+                  onFocus={(e) => e.currentTarget.select()}
+                  placeholder="0"
                   className="w-10 text-center font-mono font-bold text-sm bg-transparent text-emerald-900 focus:outline-none"
                 />
                 <span className="text-emerald-700 text-xs font-extrabold">/10</span>
