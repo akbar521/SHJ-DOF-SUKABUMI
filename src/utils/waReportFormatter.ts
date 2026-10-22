@@ -74,15 +74,19 @@ export const NBC_PRODUCT_SHORT_NAMES: Record<string, string> = {
   'LKXLA': 'Komix Lemon Tube',
   'LKXOD': 'Komix Ori Sachet',
   'LKXJA-LKXNA-LKXPA': 'Komix Rasa',
-  'FTGKAP': 'Fatigon Kaplet',
+  'TFTGF': 'Fatigon Kaplet (TFTGF)',
+  'FTGKAP': 'Fatigon Kaplet (TFTGF)',
   'LBMAV': 'Bejo Jahe Merah',
-  'ENTROT': 'Entrostop Tab',
+  'ENTROT': 'Entrostop Tab (ENTROT)',
   'PBSJC': 'Slasi',
-  'FTGSPR': 'Fatigon Spirit',
-  'ENTROH': 'Entrostop Herbal Anak',
+  'TFTSG': 'Fatigon Spirit (TFTSG)',
+  'FTGSPR': 'Fatigon Spirit (TFTSG)',
+  'LETSB': 'Entrostop Herbal Anak (LETSB)',
+  'ENTROH': 'Entrostop Herbal Anak (LETSB)',
   'LPRGR': 'Promag Herbal',
   'LMHGA': 'Mixagrip Herbal',
-  'KLPSL': 'Kalpanax Salep'
+  'CKPXE': 'Kalpanax Salep (CKPXE)',
+  'KLPSL': 'Kalpanax Salep (CKPXE)'
 };
 
 /**

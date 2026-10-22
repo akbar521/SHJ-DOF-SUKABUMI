@@ -74,12 +74,22 @@ export const INITIAL_PRODUCTS: Product[] = [
     wilayah: ['Sukabumi', 'Cianjur']
   },
   {
-    kode_produk: 'FTGKAP',
-    nama_produk: 'Fatigon Kaplet',
+    kode_produk: 'TFTGF',
+    nama_produk: 'Fatigon Kaplet (TFTGF)',
     harga_grosir: 18000.00,
     harga_retail: 7820.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur']
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      CIKALONG: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      CIPANAS: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      CIBEBER: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      CIRANJANG: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      CIBADAK: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      CIKOLE: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      SUKARAJA: { harga_grosir: 18000.00, harga_retail: 7820.00 },
+      NYALINDUNG: { harga_grosir: 18000.00, harga_retail: 7820.00 }
+    }
   },
   {
     kode_produk: 'LBMAV',
@@ -91,16 +101,20 @@ export const INITIAL_PRODUCTS: Product[] = [
   },
   {
     kode_produk: 'ENTROT',
-    nama_produk: 'Entrostop Tab',
+    nama_produk: 'Entrostop Tab (ENTROT)',
     harga_grosir: 15000.00,
-    harga_retail: 17800.00,
+    harga_retail: 8700.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
+    wilayah: ['Sukabumi', 'Cianjur'],
     subdist_prices: {
       CIKALONG: { harga_grosir: 15000.00, harga_retail: 8700.00 },
       CIPANAS: { harga_grosir: 15000.00, harga_retail: 8700.00 },
-      CIBEBER: { harga_grosir: 15000.00, harga_retail: 17800.00 },
-      CIRANJANG: { harga_grosir: 15000.00, harga_retail: 17800.00 }
+      CIBEBER: { harga_grosir: 15000.00, harga_retail: 17600.00 },
+      CIRANJANG: { harga_grosir: 15000.00, harga_retail: 17600.00 },
+      CIBADAK: { harga_grosir: 15000.00, harga_retail: 17600.00 },
+      CIKOLE: { harga_grosir: 15000.00, harga_retail: 17600.00 },
+      SUKARAJA: { harga_grosir: 15000.00, harga_retail: 8700.00 },
+      NYALINDUNG: { harga_grosir: 15000.00, harga_retail: 8700.00 }
     }
   },
   {
@@ -112,31 +126,39 @@ export const INITIAL_PRODUCTS: Product[] = [
     wilayah: ['Sukabumi', 'Cianjur']
   },
   {
-    kode_produk: 'FTGSPR',
-    nama_produk: 'Fatigon Spirit',
+    kode_produk: 'TFTSG',
+    nama_produk: 'Fatigon Spirit (TFTSG)',
     harga_grosir: 22000.00,
-    harga_retail: 109500.00,
+    harga_retail: 10950.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
+    wilayah: ['Sukabumi', 'Cianjur'],
     subdist_prices: {
       CIKALONG: { harga_grosir: 22000.00, harga_retail: 10950.00 },
       CIPANAS: { harga_grosir: 22000.00, harga_retail: 10950.00 },
       CIBEBER: { harga_grosir: 22000.00, harga_retail: 109500.00 },
-      CIRANJANG: { harga_grosir: 22000.00, harga_retail: 109500.00 }
+      CIRANJANG: { harga_grosir: 22000.00, harga_retail: 109500.00 },
+      CIBADAK: { harga_grosir: 22000.00, harga_retail: 109500.00 },
+      CIKOLE: { harga_grosir: 22000.00, harga_retail: 109500.00 },
+      SUKARAJA: { harga_grosir: 22000.00, harga_retail: 10950.00 },
+      NYALINDUNG: { harga_grosir: 22000.00, harga_retail: 10950.00 }
     }
   },
   {
-    kode_produk: 'ENTROH',
-    nama_produk: 'Entrostop Herbal Anak',
+    kode_produk: 'LETSB',
+    nama_produk: 'Entrostop Herbal Anak (LETSB)',
     harga_grosir: 16500.00,
     harga_retail: 16700.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur'],
+    wilayah: ['Sukabumi', 'Cianjur'],
     subdist_prices: {
       CIKALONG: { harga_grosir: 16500.00, harga_retail: 16700.00 },
       CIPANAS: { harga_grosir: 16500.00, harga_retail: 16700.00 },
       CIBEBER: { harga_grosir: 16500.00, harga_retail: 16600.00 },
-      CIRANJANG: { harga_grosir: 16500.00, harga_retail: 16600.00 }
+      CIRANJANG: { harga_grosir: 16500.00, harga_retail: 16600.00 },
+      CIBADAK: { harga_grosir: 16500.00, harga_retail: 16600.00 },
+      CIKOLE: { harga_grosir: 16500.00, harga_retail: 16600.00 },
+      SUKARAJA: { harga_grosir: 16500.00, harga_retail: 16700.00 },
+      NYALINDUNG: { harga_grosir: 16500.00, harga_retail: 16700.00 }
     }
   },
   {
@@ -156,12 +178,22 @@ export const INITIAL_PRODUCTS: Product[] = [
     wilayah: ['Sukabumi', 'Cianjur']
   },
   {
-    kode_produk: 'KLPSL',
-    nama_produk: 'Kalpanax Salep',
+    kode_produk: 'CKPXE',
+    nama_produk: 'Kalpanax Salep (CKPXE)',
     harga_grosir: 9000.00,
     harga_retail: 10800.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur']
+    wilayah: ['Sukabumi', 'Cianjur'],
+    subdist_prices: {
+      CIKALONG: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      CIPANAS: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      CIBEBER: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      CIRANJANG: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      CIBADAK: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      CIKOLE: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      SUKARAJA: { harga_grosir: 9000.00, harga_retail: 10800.00 },
+      NYALINDUNG: { harga_grosir: 9000.00, harga_retail: 10800.00 }
+    }
   }
 ];
 
@@ -322,5 +354,9 @@ INSERT INTO produk (kode_produk, nama_produk, harga_grosir, harga_retail, persen
 ('PBSJC', 'B7 SLASI Jeruk Nipis Renceng (12''s)', 17460.30, 19000.00, 0.20),
 ('LPRGR', 'Promag Herbal 15 ml (6 ''S)', 15810.00, 16800.00, 0.00),
 ('LMHGA', 'Mixagrip Herbal Greges (6''S)', 16188.00, 16700.00, 0.00),
-('KLPSL', 'Kalpanax Salep', 9000.00, 10800.00, 0.20);
+('TFTGF', 'Fatigon Kaplet (TFTGF)', 18000.00, 7820.00, 0.20),
+('ENTROT', 'Entrostop Tab (ENTROT)', 15000.00, 8700.00, 0.20),
+('TFTSG', 'Fatigon Spirit (TFTSG)', 22000.00, 10950.00, 0.20),
+('LETSB', 'Entrostop Herbal Anak (LETSB)', 16500.00, 16700.00, 0.20),
+('CKPXE', 'Kalpanax Salep (CKPXE)', 9000.00, 10800.00, 0.20);
 `;

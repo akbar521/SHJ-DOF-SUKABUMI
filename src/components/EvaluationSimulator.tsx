@@ -175,17 +175,17 @@ export function EvaluationSimulator({ products }: EvaluationSimulatorProps) {
   const salesmenOptions = useMemo(() => {
     if (selectedWilayah === 'Cianjur') {
       return [
-        { name: 'HERU', pangkalan: 'Cikalong', dms: 'MMTW-CJR-CKL' },
-        { name: 'HERPIN', pangkalan: 'Cipanas', dms: 'MMTW-CJR-CPN' },
-        { name: 'AHYAR', pangkalan: 'Ciranjang', dms: 'MMTW-CJR-CRJ' },
-        { name: 'RIBCA', pangkalan: 'Cibeber', dms: 'MMTW-CJR-CBR' },
+        { name: 'HERU', pangkalan: 'Cikalong', system: 'Blesscom', dms: 'MMTW-CJR-CKL' },
+        { name: 'HERPIN', pangkalan: 'Cipanas', system: 'Blesscom', dms: 'MMTW-CJR-CPN' },
+        { name: 'AHYAR', pangkalan: 'Ciranjang', system: 'DMS', dms: 'MMTW-CJR-CRJ' },
+        { name: 'RIBCA', pangkalan: 'Cibeber', system: 'DMS', dms: 'MMTW-CJR-CBR' },
       ];
     } else {
       return [
-        { name: 'RUSDIANA', pangkalan: 'Cibadak', dms: 'MMTW-SKI-CIBADAK' },
-        { name: 'HIKMATIAR', pangkalan: 'Nyalindung', dms: 'MMTW-SKI-NYALINDUNG' },
-        { name: 'EGA', pangkalan: 'Cikole', dms: 'MMTW-SKI-CIKOLE' },
-        { name: 'DIAN', pangkalan: 'Sukaraja', dms: 'MMTW-SKI-SUKARAJA' },
+        { name: 'RUSDIANA', pangkalan: 'Cibadak', system: 'DMS', dms: 'MMTW-SKI-CIBADAK' },
+        { name: 'HIKMATIAR', pangkalan: 'Nyalindung', system: 'Blesscom', dms: 'MMTW-SKI-NYALINDUNG' },
+        { name: 'EGA', pangkalan: 'Cikole', system: 'DMS', dms: 'MMTW-SKI-CIKOLE' },
+        { name: 'DIAN', pangkalan: 'Sukaraja', system: 'Blesscom', dms: 'MMTW-SKI-SUKARAJA' },
       ];
     }
   }, [selectedWilayah]);
@@ -633,7 +633,7 @@ _Generated automatically by KALBE Motoris Performance Evaluation System_`;
               >
                 {salesmenOptions.map(s => (
                   <option key={s.name} value={s.name} className="bg-slate-900 text-white">
-                    {s.name} ({s.pangkalan})
+                    {s.name} ({s.pangkalan} - {s.system})
                   </option>
                 ))}
               </select>

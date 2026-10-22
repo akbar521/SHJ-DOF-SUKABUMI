@@ -169,6 +169,11 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         else if (p.kode_produk === 'LBMAV') sampleObj[p.kode_produk] = 2;
         else if (p.kode_produk === 'LPRGR') sampleObj[p.kode_produk] = 1;
         else if (p.kode_produk === 'PBSJC') sampleObj[p.kode_produk] = 3;
+        else if (p.kode_produk === 'ENTROT') sampleObj[p.kode_produk] = 4;
+        else if (p.kode_produk === 'LETSB' || p.kode_produk === 'ENTROH') sampleObj[p.kode_produk] = 2;
+        else if (p.kode_produk === 'CKPXE' || p.kode_produk === 'KLPSL') sampleObj[p.kode_produk] = 2;
+        else if (p.kode_produk === 'TFTSG' || p.kode_produk === 'FTGSPR') sampleObj[p.kode_produk] = 1;
+        else if (p.kode_produk === 'TFTGF' || p.kode_produk === 'FTGKAP') sampleObj[p.kode_produk] = 2;
         else sampleObj[p.kode_produk] = 0;
       } else {
         if (p.kode_produk === 'PEGAB') sampleObj[p.kode_produk] = 21;
@@ -178,6 +183,11 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         else if (p.kode_produk === 'PBSJC') sampleObj[p.kode_produk] = 3;
         else if (p.kode_produk === 'LBMAV') sampleObj[p.kode_produk] = 1;
         else if (p.kode_produk === 'LPRGR') sampleObj[p.kode_produk] = 1;
+        else if (p.kode_produk === 'ENTROT') sampleObj[p.kode_produk] = 3;
+        else if (p.kode_produk === 'LETSB' || p.kode_produk === 'ENTROH') sampleObj[p.kode_produk] = 2;
+        else if (p.kode_produk === 'CKPXE' || p.kode_produk === 'KLPSL') sampleObj[p.kode_produk] = 2;
+        else if (p.kode_produk === 'TFTSG' || p.kode_produk === 'FTGSPR') sampleObj[p.kode_produk] = 1;
+        else if (p.kode_produk === 'TFTGF' || p.kode_produk === 'FTGKAP') sampleObj[p.kode_produk] = 2;
         else sampleObj[p.kode_produk] = 0;
       }
     });
@@ -527,6 +537,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   Pangkalan: {activeSubdistInfo.label}
                 </span>
                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
+                  activeSubdistInfo.system === 'Blesscom'
+                    ? 'bg-blue-100 text-blue-800 border-blue-300'
+                    : 'bg-amber-100 text-amber-800 border-amber-300'
+                }`}>
+                  Sistem: {activeSubdistInfo.system}
+                </span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                   selectedWilayah === 'Cianjur'
                     ? 'bg-indigo-50 text-indigo-800 border-indigo-200'
                     : 'bg-emerald-50 text-emerald-800 border-emerald-200'
@@ -535,7 +552,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                 </span>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Kalkulasi <strong>Daily Activity Report</strong> &amp; <strong>Omset Setoran</strong> untuk Pangkalan {activeSubdistInfo.label} dan salesman {salesmanName}.
+                Kalkulasi <strong>Daily Activity Report</strong> &amp; <strong>Omset Setoran</strong> untuk Pangkalan {activeSubdistInfo.label} ({activeSubdistInfo.system}) dan salesman {salesmanName}.
               </p>
             </div>
           </div>
@@ -628,7 +645,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   <UserIcon className="w-3.5 h-3.5 text-blue-600" />
                   <span>Pilih Salesman / Pangkalan Cianjur:</span>
                 </span>
-                <span className="text-[10px] text-slate-400">DMS &amp; Pangkalan terintegrasi</span>
+                <span className="text-[10px] text-slate-400">Blesscom &amp; DMS terintegrasi</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {CIANJUR_MOTORIS.map((m) => {
@@ -650,7 +667,16 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                         }`}>
                           {m.areaHint?.toUpperCase() || 'CIANJUR'}
                         </span>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
+                        <div className="flex items-center space-x-1">
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
+                            m.system === 'Blesscom'
+                              ? 'bg-blue-100 text-blue-800 border-blue-200'
+                              : 'bg-amber-100 text-amber-800 border-amber-200'
+                          }`}>
+                            {m.system}
+                          </span>
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600" />}
+                        </div>
                       </div>
                       <div className="font-extrabold text-sm text-slate-900 mt-1.5">{m.name}</div>
                       <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
@@ -671,7 +697,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                   <UserIcon className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Pilih Salesman / Pangkalan Sukabumi:</span>
                 </span>
-                <span className="text-[10px] text-slate-400">DMS &amp; Pangkalan terintegrasi</span>
+                <span className="text-[10px] text-slate-400">Blesscom &amp; DMS terintegrasi</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {SUKABUMI_MOTORIS.map((m) => {
@@ -693,7 +719,16 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                         }`}>
                           {m.areaHint?.toUpperCase() || 'SUKABUMI'}
                         </span>
-                        {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                        <div className="flex items-center space-x-1">
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
+                            m.system === 'Blesscom'
+                              ? 'bg-blue-100 text-blue-800 border-blue-200'
+                              : 'bg-amber-100 text-amber-800 border-amber-200'
+                          }`}>
+                            {m.system}
+                          </span>
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                        </div>
                       </div>
                       <div className="font-extrabold text-sm text-slate-900 mt-1.5">{m.name}</div>
                       <div className="text-[11px] text-slate-600 font-semibold mt-0.5">
@@ -1026,13 +1061,47 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                     <td className="p-3">
                       <div className="font-bold text-slate-900 flex items-center flex-wrap gap-1.5">
                         <span>{p.nama_produk}</span>
-                        {p.kode_produk === 'FTGSPR' && (
-                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-blue-50 text-blue-800 border border-blue-200">
-                            {selectedSubdist === 'CIKALONG' || selectedSubdist === 'CIPANAS' 
-                              ? '1 Strip (Rp 10.950)' 
-                              : selectedSubdist === 'CIBEBER' || selectedSubdist === 'CIRANJANG'
-                              ? '1 Box / 10 Strip (Rp 109.500)'
-                              : 'Rp 109.500'}
+                        {(p.kode_produk === 'TFTSG' || p.kode_produk === 'FTGSPR') && (
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-bold border ${
+                            activeSubdistInfo.system === 'Blesscom'
+                              ? 'bg-blue-50 text-blue-800 border-blue-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            {activeSubdistInfo.system === 'Blesscom'
+                              ? 'Blesscom: 1 Strip (Rp 10.950)' 
+                              : 'DMS: 1 Box / 10 Strip (Rp 109.500)'}
+                          </span>
+                        )}
+                        {(p.kode_produk === 'LETSB' || p.kode_produk === 'ENTROH') && (
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-bold border ${
+                            activeSubdistInfo.system === 'Blesscom'
+                              ? 'bg-blue-50 text-blue-800 border-blue-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            {activeSubdistInfo.system === 'Blesscom'
+                              ? 'Blesscom: Rp 16.700'
+                              : 'DMS: Rp 16.600'}
+                          </span>
+                        )}
+                        {p.kode_produk === 'ENTROT' && (
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-bold border ${
+                            activeSubdistInfo.system === 'Blesscom'
+                              ? 'bg-blue-50 text-blue-800 border-blue-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            {activeSubdistInfo.system === 'Blesscom'
+                              ? 'Blesscom: Rp 8.700'
+                              : 'DMS: Rp 17.600'}
+                          </span>
+                        )}
+                        {(p.kode_produk === 'CKPXE' || p.kode_produk === 'KLPSL') && (
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                            Rp 10.800
+                          </span>
+                        )}
+                        {(p.kode_produk === 'TFTGF' || p.kode_produk === 'FTGKAP') && (
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                            Rp 7.820
                           </span>
                         )}
                       </div>
