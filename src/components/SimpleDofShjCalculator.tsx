@@ -177,6 +177,7 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
         else sampleObj[p.kode_produk] = 0;
       } else {
         if (p.kode_produk === 'PEGAB') sampleObj[p.kode_produk] = 21;
+        else if (p.kode_produk === 'PEMAB') sampleObj[p.kode_produk] = 5;
         else if (p.kode_produk === 'LEXUA') sampleObj[p.kode_produk] = 10;
         else if (p.kode_produk === 'LKXOD') sampleObj[p.kode_produk] = 2;
         else if (p.kode_produk === 'LKXJA-LKXNA-LKXPA') sampleObj[p.kode_produk] = 2;
@@ -1090,8 +1091,13 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                               : 'bg-amber-50 text-amber-800 border-amber-200'
                           }`}>
                             {activeSubdistInfo.system === 'Blesscom'
-                              ? 'Blesscom: Rp 8.700'
+                              ? 'Blesscom: Rp 8.800'
                               : 'DMS: Rp 17.600'}
+                          </span>
+                        )}
+                        {p.kode_produk === 'PEMAB' && (
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                            Rp 6.559
                           </span>
                         )}
                         {(p.kode_produk === 'CKPXE' || p.kode_produk === 'KLPSL') && (

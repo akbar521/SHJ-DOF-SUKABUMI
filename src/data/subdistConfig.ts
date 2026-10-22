@@ -132,7 +132,8 @@ export const SUBDIST_LIST: SubdistInfo[] = [
 export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSubdistPrice>> = {
   // CIANJUR - BLESSCOM (Heru - Cikalong, Herpin - Cipanas)
   CIKALONG: {
-    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROT: { harga_grosir: 15000, harga_retail: 8800 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -143,7 +144,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
     FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
   },
   CIPANAS: {
-    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROT: { harga_grosir: 15000, harga_retail: 8800 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -158,6 +160,7 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   // Revisi ENTROT menjadi 17.600
   CIBEBER: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16600 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -169,6 +172,7 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   },
   CIRANJANG: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16600 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -182,6 +186,7 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   // SUKABUMI - DMS (Rusdi / Rusdiana - Cibadak, Ega - Cikole)
   CIBADAK: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16600 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -193,6 +198,7 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   },
   CIKOLE: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16600 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -205,7 +211,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
 
   // SUKABUMI - BLESSCOM (Dian - Sukaraja, Hikmat / Hikmatiar - Nyalindung)
   SUKARAJA: {
-    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROT: { harga_grosir: 15000, harga_retail: 8800 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
@@ -216,7 +223,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
     FTGKAP: { harga_grosir: 18000, harga_retail: 7820 },
   },
   NYALINDUNG: {
-    ENTROT: { harga_grosir: 15000, harga_retail: 8700 },
+    ENTROT: { harga_grosir: 15000, harga_retail: 8800 },
+    PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
     LETSB: { harga_grosir: 16500, harga_retail: 16700 },
     ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },

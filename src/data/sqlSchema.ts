@@ -31,7 +31,7 @@ export const INITIAL_PRODUCTS: Product[] = [
     harga_grosir: 5141.52,
     harga_retail: 6559.00,
     persentase_dof: 0.20,
-    wilayah: ['Cianjur']
+    wilayah: ['Sukabumi', 'Cianjur']
   },
   {
     kode_produk: 'LEXUA',
@@ -103,18 +103,18 @@ export const INITIAL_PRODUCTS: Product[] = [
     kode_produk: 'ENTROT',
     nama_produk: 'Entrostop Tab (ENTROT)',
     harga_grosir: 15000.00,
-    harga_retail: 8700.00,
+    harga_retail: 8800.00,
     persentase_dof: 0.20,
     wilayah: ['Sukabumi', 'Cianjur'],
     subdist_prices: {
-      CIKALONG: { harga_grosir: 15000.00, harga_retail: 8700.00 },
-      CIPANAS: { harga_grosir: 15000.00, harga_retail: 8700.00 },
+      CIKALONG: { harga_grosir: 15000.00, harga_retail: 8800.00 },
+      CIPANAS: { harga_grosir: 15000.00, harga_retail: 8800.00 },
       CIBEBER: { harga_grosir: 15000.00, harga_retail: 17600.00 },
       CIRANJANG: { harga_grosir: 15000.00, harga_retail: 17600.00 },
       CIBADAK: { harga_grosir: 15000.00, harga_retail: 17600.00 },
       CIKOLE: { harga_grosir: 15000.00, harga_retail: 17600.00 },
-      SUKARAJA: { harga_grosir: 15000.00, harga_retail: 8700.00 },
-      NYALINDUNG: { harga_grosir: 15000.00, harga_retail: 8700.00 }
+      SUKARAJA: { harga_grosir: 15000.00, harga_retail: 8800.00 },
+      NYALINDUNG: { harga_grosir: 15000.00, harga_retail: 8800.00 }
     }
   },
   {
@@ -355,7 +355,7 @@ INSERT INTO produk (kode_produk, nama_produk, harga_grosir, harga_retail, persen
 ('LPRGR', 'Promag Herbal 15 ml (6 ''S)', 15810.00, 16800.00, 0.00),
 ('LMHGA', 'Mixagrip Herbal Greges (6''S)', 16188.00, 16700.00, 0.00),
 ('TFTGF', 'Fatigon Kaplet (TFTGF)', 18000.00, 7820.00, 0.20),
-('ENTROT', 'Entrostop Tab (ENTROT)', 15000.00, 8700.00, 0.20),
+('ENTROT', 'Entrostop Tab (ENTROT)', 15000.00, 8800.00, 0.20),
 ('TFTSG', 'Fatigon Spirit (TFTSG)', 22000.00, 10950.00, 0.20),
 ('LETSB', 'Entrostop Herbal Anak (LETSB)', 16500.00, 16700.00, 0.20),
 ('CKPXE', 'Kalpanax Salep (CKPXE)', 9000.00, 10800.00, 0.20);
