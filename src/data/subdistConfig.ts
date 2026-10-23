@@ -157,12 +157,12 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   },
 
   // CIANJUR - DMS (Ribca - Cibeber, Ahyar - Ciranjang)
-  // Revisi ENTROT menjadi 17.600
+  // Revisi ENTROT menjadi 17.600, LETSB/ENTROH menjadi 16.700
   CIBEBER: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
     PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
-    LETSB: { harga_grosir: 16500, harga_retail: 16600 },
-    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    LETSB: { harga_grosir: 16500, harga_retail: 16700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
     KLPSL: { harga_grosir: 9000, harga_retail: 10800 },
     TFTSG: { harga_grosir: 22000, harga_retail: 109500 },
@@ -173,8 +173,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   CIRANJANG: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
     PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
-    LETSB: { harga_grosir: 16500, harga_retail: 16600 },
-    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    LETSB: { harga_grosir: 16500, harga_retail: 16700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
     KLPSL: { harga_grosir: 9000, harga_retail: 10800 },
     TFTSG: { harga_grosir: 22000, harga_retail: 109500 },
@@ -187,8 +187,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   CIBADAK: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
     PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
-    LETSB: { harga_grosir: 16500, harga_retail: 16600 },
-    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    LETSB: { harga_grosir: 16500, harga_retail: 16700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
     KLPSL: { harga_grosir: 9000, harga_retail: 10800 },
     TFTSG: { harga_grosir: 22000, harga_retail: 109500 },
@@ -199,8 +199,8 @@ export const DEFAULT_SUBDIST_PRICES: Record<SubdistKey, Record<string, ProductSu
   CIKOLE: {
     ENTROT: { harga_grosir: 15000, harga_retail: 17600 },
     PEMAB: { harga_grosir: 5141.52, harga_retail: 6559 },
-    LETSB: { harga_grosir: 16500, harga_retail: 16600 },
-    ENTROH: { harga_grosir: 16500, harga_retail: 16600 },
+    LETSB: { harga_grosir: 16500, harga_retail: 16700 },
+    ENTROH: { harga_grosir: 16500, harga_retail: 16700 },
     CKPXE: { harga_grosir: 9000, harga_retail: 10800 },
     KLPSL: { harga_grosir: 9000, harga_retail: 10800 },
     TFTSG: { harga_grosir: 22000, harga_retail: 109500 },

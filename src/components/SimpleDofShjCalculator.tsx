@@ -1074,14 +1074,8 @@ export function SimpleDofShjCalculator({ products }: SimpleDofShjCalculatorProps
                           </span>
                         )}
                         {(p.kode_produk === 'LETSB' || p.kode_produk === 'ENTROH') && (
-                          <span className={`text-[10px] px-2 py-0.5 rounded font-bold border ${
-                            activeSubdistInfo.system === 'Blesscom'
-                              ? 'bg-blue-50 text-blue-800 border-blue-200'
-                              : 'bg-amber-50 text-amber-800 border-amber-200'
-                          }`}>
-                            {activeSubdistInfo.system === 'Blesscom'
-                              ? 'Blesscom: Rp 16.700'
-                              : 'DMS: Rp 16.600'}
+                          <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                            Rp 16.700
                           </span>
                         )}
                         {p.kode_produk === 'ENTROT' && (

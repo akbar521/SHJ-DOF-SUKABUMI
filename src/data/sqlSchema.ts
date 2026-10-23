@@ -153,10 +153,10 @@ export const INITIAL_PRODUCTS: Product[] = [
     subdist_prices: {
       CIKALONG: { harga_grosir: 16500.00, harga_retail: 16700.00 },
       CIPANAS: { harga_grosir: 16500.00, harga_retail: 16700.00 },
-      CIBEBER: { harga_grosir: 16500.00, harga_retail: 16600.00 },
-      CIRANJANG: { harga_grosir: 16500.00, harga_retail: 16600.00 },
-      CIBADAK: { harga_grosir: 16500.00, harga_retail: 16600.00 },
-      CIKOLE: { harga_grosir: 16500.00, harga_retail: 16600.00 },
+      CIBEBER: { harga_grosir: 16500.00, harga_retail: 16700.00 },
+      CIRANJANG: { harga_grosir: 16500.00, harga_retail: 16700.00 },
+      CIBADAK: { harga_grosir: 16500.00, harga_retail: 16700.00 },
+      CIKOLE: { harga_grosir: 16500.00, harga_retail: 16700.00 },
       SUKARAJA: { harga_grosir: 16500.00, harga_retail: 16700.00 },
       NYALINDUNG: { harga_grosir: 16500.00, harga_retail: 16700.00 }
     }
